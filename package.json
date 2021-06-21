@@ -7,12 +7,20 @@
     "start": "next start"
   },
   "dependencies": {
+    "@material-ui/core": "^4.11.4",
+    "autoprefixer": "^10.2.6",
     "axios": "^0.21.1",
+    "got": "^11.8.2",
+    "metascraper": "^5.22.1",
     "mongoose": "^5.9.13",
     "next": "latest",
+    "ogs": "^0.0.6",
+    "open-graph-scraper": "^4.9.0",
+    "postcss": "^8.3.5",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "swr": "0.2.2"
+    "swr": "^0.5.6",
+    "tailwindcss": "^2.2.2"
   },
   "license": "MIT"
 }

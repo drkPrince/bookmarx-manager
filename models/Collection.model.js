@@ -4,5 +4,5 @@ const CollectionSchema = new mongoose.Schema({
   name: String,
 });
 
-export default mongoose.models.Collection ||
-  mongoose.model("Collection", CollectionSchema);
+export default mongoose.models.collection ||
+  mongoose.model("collection", CollectionSchema);
