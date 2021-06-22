@@ -2442,6 +2442,34 @@ merge2@^1.3.0:
   resolved "https://registry.yarnpkg.com/merge2/-/merge2-1.4.1.tgz#4368892f885e907455a6fd7dc55c0c9d404990ae"
   integrity sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==
 
+metascraper-description@^5.22.1:
+  version "5.22.1"
+  resolved "https://registry.yarnpkg.com/metascraper-description/-/metascraper-description-5.22.1.tgz#cc0e17f64d8a16212aa0ef897bd2ae3d12642f7c"
+  integrity sha512-vpY1ve9sCdJa6qgBDuw9zxLrZ1+Z6xad2UD+AWzc8bSLRsn3XQfAYLGHLyr1BN9nRXHNaKfg4Sb9YRe/ZjUv+w==
+  dependencies:
+    "@metascraper/helpers" "^5.22.1"
+
+metascraper-image@^5.22.1:
+  version "5.22.1"
+  resolved "https://registry.yarnpkg.com/metascraper-image/-/metascraper-image-5.22.1.tgz#d4a0c43b727967c4e50d53694de8c91eb5fffb1b"
+  integrity sha512-bGmaIUjx5577YJH2YhuzU+VMNTkzoYxMVp89rIuDOR2mJ7xrzGVQuyiwkHpoGP2z2N2gkFJQZQPCIi96WTJSgQ==
+  dependencies:
+    "@metascraper/helpers" "^5.22.1"
+
+metascraper-publisher@^5.22.1:
+  version "5.22.1"
+  resolved "https://registry.yarnpkg.com/metascraper-publisher/-/metascraper-publisher-5.22.1.tgz#11028541914654ce2577d0d6670021609e3b3f70"
+  integrity sha512-X/hl80biMKZtBOnzIYqXPe8QkJg0rcASqz/OdIL7Uk8nPy8z0pd99nPRuRD9RKv9/xIELBkI9q4EpjZxsLfXZg==
+  dependencies:
+    "@metascraper/helpers" "^5.22.1"
+
+metascraper-title@^5.22.1:
+  version "5.22.1"
+  resolved "https://registry.yarnpkg.com/metascraper-title/-/metascraper-title-5.22.1.tgz#7436c7a8b7ec0d77ef162b0df0fdaa0083a836d4"
+  integrity sha512-vFuQuw8oA00kuKhzsnTRGjs9p91/fogdlohBI1LJ5ZQ6ZBPryLTFq29FrC975FrKFlxkk7tntmmu7p6VWrfKrg==
+  dependencies:
+    "@metascraper/helpers" "^5.22.1"
+
 metascraper@^5.22.1:
   version "5.22.1"
   resolved "https://registry.yarnpkg.com/metascraper/-/metascraper-5.22.1.tgz#979989ffc30396e3e19485241e5d684eacb7ee5b"

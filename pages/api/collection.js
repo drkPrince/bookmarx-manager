@@ -2,7 +2,7 @@ import dbConnect from "../../utils/dbConnect";
 import Collection from "../../models/Collection.model.js";
 
 export default async function handler(req, res) {
-    const { method } = req;
+    const { method, body } = req;
     await dbConnect();
 
     switch (method) {
@@ -16,9 +16,20 @@ export default async function handler(req, res) {
             break;
         case "POST":
             try {
-                const newCollection = await Collection.create(req.body);
+                const newCollection = await Collection.create(body);
                 res.status(201).json({ success: true, data: newCollection });
             } catch (error) {
+                res.status(400).json({ success: false });
+            }
+            break;
+
+        case "DELETE":
+            try {
+                const response = await Collection.deleteOne({
+                    _id: body.linkID,
+                });
+                res.status(200).json({ success: true });
+            } catch (e) {
                 res.status(400).json({ success: false });
             }
             break;

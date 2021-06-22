@@ -1,3 +1,9 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600&display=swap");
+
+body {
+  font-family: "Inter", sans-serif !important;
+}
+
 nav {
   height: 8vh;
 }
@@ -7,8 +13,4 @@ aside {
   height: 92vh;
   overflow: hidden;
   transition: all 0.5s ease-in-out;
-}
-
-main {
-  padding: 1rem 2rem;
 }

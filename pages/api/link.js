@@ -1,9 +1,7 @@
 import dbConnect from "../../utils/dbConnect";
 import Link from "../../models/Link.model.js";
-import metascraper from "metascraper";
+import Metascraper from "metascraper";
 import axios from "axios";
-import got from "got";
-import ogs from "open-graph-scraper";
 
 export default async function (req, res) {
 	const { method, body, query } = req;
@@ -26,19 +24,36 @@ export default async function (req, res) {
 
 		case "POST":
 			try {
-				const options = { url: body.url };
-				console.log(options);
-				const { result } = await ogs(options);
-				console.log(result);
+				const metascraper = Metascraper([
+					require("metascraper-description")(),
+					require("metascraper-image")(),
+					require("metascraper-title")(),
+				]);
+
+				const url = body.url;
+				const response = await axios.get(url);
+				const html = response.data;
+				const resource = await metascraper({ html, url });
+
 				const newLink = await Link.create({
 					...body,
-					metadata: result,
+					metadata: resource,
 				});
 				res.status(201).json({ success: true, data: newLink });
 			} catch (error) {
 				res.status(400).json({ success: false });
 			}
 			break;
+
+		case "DELETE":
+			try {
+				const response = await Link.deleteOne({ _id: body.linkID });
+				res.status(200).json({ success: true });
+			} catch (e) {
+				res.status(400).json({ success: false });
+			}
+			break;
+
 		default:
 			res.status(400).json({ success: false });
 			break;
