@@ -1,5 +1,6 @@
 import dbConnect from "../../utils/dbConnect";
 import Collection from "../../models/Collection.model.js";
+import Link from "../../models/Link.model.js";
 
 export default async function handler(req, res) {
     const { method, body } = req;
@@ -25,9 +26,10 @@ export default async function handler(req, res) {
 
         case "DELETE":
             try {
-                const response = await Collection.deleteOne({
-                    _id: body.linkID,
+                await Collection.deleteOne({
+                    _id: body.collectionID,
                 });
+                await Link.deleteMany({ collectionID: body.collectionID });
                 res.status(200).json({ success: true });
             } catch (e) {
                 res.status(400).json({ success: false });

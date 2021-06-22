@@ -26,6 +26,14 @@ function MyApp({ Component, pageProps }) {
         e.target.reset();
     };
 
+    const deleteCollection = async (id) => {
+        setCollections((collections) =>
+            collections.filter((x) => x._id !== id)
+        );
+        await axios.delete("/api/collection", { data: { collectionID: id } });
+        router.push("/");
+    };
+
     return (
         <div>
             <nav className="bg-blue-700">
@@ -54,6 +62,13 @@ function MyApp({ Component, pageProps }) {
                                     >
                                         {col.name}
                                     </Link>
+                                    <button
+                                        onClick={() =>
+                                            deleteCollection(col._id)
+                                        }
+                                    >
+                                        D
+                                    </button>
                                 </div>
                             ))}
                             <form

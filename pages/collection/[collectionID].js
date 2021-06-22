@@ -29,7 +29,6 @@ const Collection = (props) => {
 	};
 
 	const deleteLink = async (id) => {
-		console.log(id);
 		setLinks((links) => links.filter((x) => x._id !== id));
 		await axios.delete("/api/link", { data: { linkID: id } });
 	};
