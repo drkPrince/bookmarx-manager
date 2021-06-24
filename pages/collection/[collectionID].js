@@ -4,6 +4,7 @@ import axios from "axios";
 
 import { Dialog } from "@reach/dialog";
 import "@reach/dialog/styles.css";
+import Head from "next/head";
 
 const Collection = (props) => {
 	const router = useRouter();
@@ -24,12 +25,12 @@ const Collection = (props) => {
 
 	const addNewLink = async (e) => {
 		e.preventDefault();
+		setModal(false);
 		const res = await axios.post("/api/link", {
 			url: e.target.elements.url.value,
 			collectionID,
 		});
 		setLinks((links) => [...links, res.data.data]);
-		e.target.reset();
 	};
 
 	const deleteLink = async (id) => {
@@ -39,7 +40,14 @@ const Collection = (props) => {
 
 	return (
 		<div className="px-8 py-12 w-full">
-			<Dialog isOpen={modal} onDismiss={() => setModal(false)}>
+			<Head>
+				<title>{name} | BookmarX</title>
+			</Head>
+			<Dialog
+				aria-label="Add a new bookmark"
+				isOpen={modal}
+				onDismiss={() => setModal(false)}
+			>
 				<div>
 					<form className=" px-7 py-8" onSubmit={addNewLink}>
 						<h2 className="text-2xl text-gray-800">
@@ -71,7 +79,7 @@ const Collection = (props) => {
 			<div className="flex justify-between">
 				<h1 className="text-xl text-gray-800 font-semibold">{name}</h1>
 				<button
-					className="bg-blue-700 px-2 py-0.5 text-gray-100 rounded"
+					className="bg-blue-700 px-2 py-1 text-gray-100 rounded"
 					onClick={() => setModal(true)}
 				>
 					Add new +

@@ -1,11 +1,54 @@
 import NextAuth from "next-auth";
 import Providers from "next-auth/providers";
+import bcrypt from "bcryptjs";
+import dbConnect from "../../../utils/dbConnect";
+import User from "../../../models/User.model.js";
 
 export default NextAuth({
+    callbacks: {
+        async jwt(token, user, account, profile, isNewUser) {
+            console.log("--JWT");
+            if (user) {
+                token.user = user._id;
+            }
+            console.log(token, user, account, profile, isNewUser);
+            return token;
+        },
+        async session(session, user) {
+            console.log("---SESSION");
+            session.user.userID = user.user;
+            console.log(session, user);
+            return session;
+        },
+    },
+
     providers: [
-        Providers.GitHub({
-            clientId: process.env.GITHUB_ID,
-            clientSecret: process.env.GITHUB_SECRET,
+        Providers.Credentials({
+            name: "credentials",
+            credentials: {
+                username: {
+                    label: "Username",
+                    type: "text",
+                    placeholder: "username",
+                },
+                password: { label: "Password", type: "password" },
+            },
+            async authorize(credentials, req) {
+                await dbConnect();
+                const theUser = await User.findOne({
+                    username: credentials.username,
+                });
+                if (theUser) {
+                    const doesPasswordMatch = bcrypt.compareSync(
+                        credentials.password,
+                        theUser.password
+                    );
+                    if (doesPasswordMatch) return theUser;
+                    else return null;
+                } else throw new Error("INVALID");
+            },
         }),
     ],
 });
+
+//username: 'assasas', password: 'asasas'

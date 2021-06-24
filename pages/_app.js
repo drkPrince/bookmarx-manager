@@ -5,6 +5,7 @@ import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { signIn, signOut, useSession } from "next-auth/client";
+import Head from "next/head";
 
 import { Dialog } from "@reach/dialog";
 import "@reach/dialog/styles.css";
@@ -20,7 +21,7 @@ function MyApp({ Component, pageProps }) {
         if (!loading && session?.user) {
             (async () => {
                 const { data } = await axios.get(
-                    `/api/collection?user=${session.user.email}`
+                    `/api/collection?user=${session.user.userID}`
                 );
                 setCollections(data.data);
             })();
@@ -29,9 +30,10 @@ function MyApp({ Component, pageProps }) {
 
     const addNewCollection = async (e) => {
         e.preventDefault();
+        setModal(false);
         const res = await axios.post("/api/collection", {
             name: e.target.elements.name.value,
-            user: session.user.email,
+            user: session.user.userID,
         });
         setCollections((collections) => [...collections, res.data.data]);
         e.target.reset();
@@ -47,12 +49,39 @@ function MyApp({ Component, pageProps }) {
         router.push("/");
     };
 
+    const signup = (e) => {
+        e.preventDefault();
+        axios.post("/api/auth/signup", {
+            username: e.target.elements.username.value,
+            password: e.target.elements.password.value,
+        });
+    };
+
     return (
         <>
+            <Head>
+                <title>BookmarX</title>
+            </Head>
             {!session && (
                 <>
                     Not signed in <br />
                     <button onClick={() => signIn()}>Sign in</button>
+                    <div className="p-12">
+                        <h1 className="text-2xl">Create an account</h1>
+                        <form className="mt-6" onSubmit={signup}>
+                            <input
+                                type="text"
+                                name="username"
+                                placeholder="Username"
+                            />
+                            <input
+                                type="password"
+                                name="password"
+                                placeholder="Password"
+                            />
+                            <button>Signup</button>
+                        </form>
+                    </div>
                 </>
             )}
             {session && (
@@ -141,7 +170,11 @@ function MyApp({ Component, pageProps }) {
                     </div>
                 </div>
             )}
-            <Dialog isOpen={modal} onDismiss={() => setModal(false)}>
+            <Dialog
+                aria-label="Add a new collection"
+                isOpen={modal}
+                onDismiss={() => setModal(false)}
+            >
                 <div>
                     <form onSubmit={addNewCollection} className="">
                         <label className="text-2xl" htmlFor="name">

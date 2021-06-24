@@ -11,6 +11,8 @@
     "@reach/dialog": "^0.15.0",
     "autoprefixer": "^10.2.6",
     "axios": "^0.21.1",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^8.5.1",
     "metascraper": "^5.22.1",
     "metascraper-description": "^5.22.1",
     "metascraper-image": "^5.22.1",
