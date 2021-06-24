@@ -48,7 +48,7 @@ export default async function (req, res) {
 		case "DELETE":
 			try {
 				const response = await Link.deleteOne({
-					_id: body.collectionID,
+					_id: body.linkID,
 				});
 				res.status(200).json({ success: true });
 			} catch (e) {

@@ -3,13 +3,13 @@ import Collection from "../../models/Collection.model.js";
 import Link from "../../models/Link.model.js";
 
 export default async function handler(req, res) {
-    const { method, body } = req;
+    const { method, body, query } = req;
     await dbConnect();
 
     switch (method) {
         case "GET":
             try {
-                const collections = await Collection.find({});
+                const collections = await Collection.find({ user: query.user });
                 res.status(200).json({ success: true, data: collections });
             } catch (error) {
                 res.status(400).json({ success: false });

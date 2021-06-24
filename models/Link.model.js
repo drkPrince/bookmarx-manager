@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const LinkSchema = new mongoose.Schema({
 	title: String,
 	url: String,
+	user: String,
 	metadata: {
 		type: Map,
 	},
