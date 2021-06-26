@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@material-ui/core": "^4.11.4",
+    "@material-ui/icons": "^4.11.2",
     "@reach/dialog": "^0.15.0",
     "autoprefixer": "^10.2.6",
     "axios": "^0.21.1",

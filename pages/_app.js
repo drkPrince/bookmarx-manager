@@ -1,61 +1,79 @@
 import { useState, useEffect } from "react";
 import "../css/style.css";
 import "../css/global.css";
-import axios from "axios";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { signIn, signOut, useSession } from "next-auth/client";
 import Head from "next/head";
-
 import { Dialog } from "@reach/dialog";
 import "@reach/dialog/styles.css";
+import DrawerContent from "../components/DrawerContent";
+//MUI
+import { IconButton, Button, Input, Drawer, Hidden } from "@material-ui/core";
+import AppBar from "@material-ui/core/AppBar";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+import MenuIcon from "@material-ui/icons/Menu";
+import ArrowRightAltOutlinedIcon from "@material-ui/icons/ArrowRightAltOutlined";
+
+import {
+    getCollections,
+    addNewCollection,
+    deleteCollection,
+    signup,
+} from "../utils/helpers";
+
+const drawerWidth = 220;
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        display: "flex",
+    },
+    drawer: {
+        zIndex: "0",
+        [theme.breakpoints.up("sm")]: {
+            width: drawerWidth,
+            flexShrink: 0,
+        },
+    },
+    appBar: {
+        height: "7vh",
+        [theme.breakpoints.up("sm")]: {
+            width: `calc(100% - ${drawerWidth}px)`,
+            marginLeft: drawerWidth,
+        },
+    },
+    menuButton: {
+        marginRight: theme.spacing(2),
+        [theme.breakpoints.up("sm")]: {
+            display: "none",
+        },
+    },
+    // necessary for content to be below app bar
+    toolbar: theme.mixins.toolbar,
+    drawerPaper: {
+        width: drawerWidth,
+    },
+    content: {
+        flexGrow: 1,
+    },
+}));
 
 function MyApp({ Component, pageProps }) {
+    const classes = useStyles();
+    const theme = useTheme();
     const [drawer, setDrawer] = useState(false);
     const [modal, setModal] = useState(false);
+    const [mobileOpen, setMobileOpen] = useState(false);
     const [collections, setCollections] = useState(null);
     const router = useRouter();
     const [session, loading] = useSession();
 
     useEffect(() => {
         if (!loading && session?.user) {
-            (async () => {
-                const { data } = await axios.get(
-                    `/api/collection?user=${session.user.userID}`
-                );
-                setCollections(data.data);
-            })();
+            getCollections(session.user.userID, setCollections);
         }
     }, [session, loading]);
 
-    const addNewCollection = async (e) => {
-        e.preventDefault();
-        setModal(false);
-        const res = await axios.post("/api/collection", {
-            name: e.target.elements.name.value,
-            user: session.user.userID,
-        });
-        setCollections((collections) => [...collections, res.data.data]);
-        e.target.reset();
-    };
-
-    const deleteCollection = async (id) => {
-        setCollections((collections) =>
-            collections.filter((x) => x._id !== id)
-        );
-        await axios.delete("/api/collection", {
-            data: { collectionID: id, user: session.user.email },
-        });
-        router.push("/");
-    };
-
-    const signup = (e) => {
-        e.preventDefault();
-        axios.post("/api/auth/signup", {
-            username: e.target.elements.username.value,
-            password: e.target.elements.password.value,
-        });
-    };
+    if (loading) return <p>Loading</p>;
 
     return (
         <>
@@ -86,106 +104,111 @@ function MyApp({ Component, pageProps }) {
             )}
             {session && (
                 <div>
-                    <nav className="bg-blue-700 text-gray-200 flex items-center justify-between pl-4 pr-12">
-                        <button onClick={() => setDrawer(!drawer)}>
-                            <svg
-                                className="w-6 h-6  "
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg"
+                    <div className={classes.appBar}>
+                        <div className="flex justify-between items-center px-12 h-full">
+                            <IconButton
+                                color="inherit"
+                                aria-label="open drawer"
+                                edge="start"
+                                onClick={() => setMobileOpen(true)}
+                                className={classes.menuButton}
                             >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M4 6h16M4 12h8m-8 6h16"
-                                />
-                            </svg>
-                        </button>
-                        <button onClick={signOut}>Sign out</button>
-                    </nav>
-                    <div className="flex">
-                        <aside
-                            style={{ width: drawer ? "0" : "250px" }}
-                            className="pt-8 bg-blue-50"
-                        >
-                            <div className="px-2 flex justify-between items-center">
-                                <h1 className="text-xs tracking-wider uppercase   text-gray-700">
-                                    Collections
-                                </h1>
-                                <button
-                                    onClick={() => setModal(true)}
-                                    className="text-gray-600 text-2xl rounded"
+                                <MenuIcon />
+                            </IconButton>
+                        </div>
+                    </div>
+
+                    <div className={classes.root}>
+                        <nav className={classes.drawer}>
+                            <Hidden smUp implementation="css">
+                                <Drawer
+                                    variant="temporary"
+                                    anchor={
+                                        theme.direction === "rtl"
+                                            ? "right"
+                                            : "left"
+                                    }
+                                    open={mobileOpen}
+                                    onClose={() => setMobileOpen(!mobileOpen)}
+                                    classes={{
+                                        paper: classes.drawerPaper,
+                                    }}
+                                    ModalProps={{
+                                        keepMounted: true, // Better open performance on mobile.
+                                    }}
                                 >
-                                    +
-                                </button>
-                            </div>
-                            {collections && (
-                                <div className="space-y-3 mt-5 pl-2 pr-0.5">
-                                    {collections.map((col) => (
-                                        <div
-                                            key={col._id}
-                                            className={
-                                                router.query.collectionID ===
-                                                `${col._id}`
-                                                    ? "text-blue-800 font-semibold border-r-2 border-blue-700 flex justify-between pr-2"
-                                                    : "text-gray-800 hover:text-blue-800 flex justify-between pr-2"
-                                            }
-                                        >
-                                            <Link
-                                                href={`/collection/${col._id}?name=${col.name}`}
-                                                className="truncate"
-                                            >
-                                                {col.name}
-                                            </Link>
-                                            <button
-                                                onClick={() =>
-                                                    deleteCollection(col._id)
-                                                }
-                                            >
-                                                <svg
-                                                    className="w-4 h-4 text-gray-500 hover:text-red-600"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    viewBox="0 0 24 24"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                >
-                                                    <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        strokeWidth={2}
-                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                                                    />
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </aside>
-                        <main className="w-full">
+                                    <DrawerContent
+                                        className="pt-12"
+                                        setModal={setModal}
+                                        router={router}
+                                        collections={collections}
+                                        setCollections={setCollections}
+                                        signOut={signOut}
+                                    />
+                                </Drawer>
+                            </Hidden>
+                            <Hidden xsDown implementation="css">
+                                <Drawer
+                                    classes={{
+                                        paper: classes.drawerPaper,
+                                    }}
+                                    variant="permanent"
+                                    open
+                                >
+                                    <DrawerContent
+                                        className="pt-12"
+                                        setModal={setModal}
+                                        router={router}
+                                        collections={collections}
+                                        signOut={signOut}
+                                    />
+                                </Drawer>
+                            </Hidden>
+                        </nav>
+
+                        <main className={classes.content}>
                             <Component {...pageProps} />
                         </main>
                     </div>
                 </div>
             )}
             <Dialog
+                className="z-50"
                 aria-label="Add a new collection"
                 isOpen={modal}
                 onDismiss={() => setModal(false)}
             >
-                <div>
-                    <form onSubmit={addNewCollection} className="">
+                <div className="px-7 py-8">
+                    <form
+                        onSubmit={(e) =>
+                            addNewCollection(
+                                e,
+                                setModal,
+                                setCollections,
+                                session.user.userID
+                            )
+                        }
+                        className=""
+                    >
                         <label className="text-2xl" htmlFor="name">
                             Add a new collection
                         </label>
-                        <input
-                            className="w-full border-b outline-none border-gray-300 focus:ring-2 ring-blue-500 pb-1 mt-5 text-sm py-1 px-1"
-                            placeholder="Enter name here"
+                        <Input
+                            className="w-full  pb-1 my-7 text-sm py-1 px-1"
+                            fullWidth
+                            placeholder="Collection name"
                             type="text"
                             name="name"
                         />
+
+                        <Button
+                            variant="contained"
+                            type="submit"
+                            color="primary"
+                            endIcon={<ArrowRightAltOutlinedIcon />}
+                        >
+                            Add
+                        </Button>
                     </form>
                 </div>
             </Dialog>
