@@ -44,7 +44,7 @@ export const addNewLink = async (e, setModal, collectionID, setLinks) => {
 	setLinks((links) => [...links, res.data.data]);
 };
 
-export const deleteLink = async (id) => {
+export const deleteLink = async (id, setLinks) => {
 	setLinks((links) => links.filter((x) => x._id !== id));
 	await axios.delete("/api/link", { data: { linkID: id } });
 };

@@ -4,9 +4,8 @@ import "../css/global.css";
 import { useRouter } from "next/router";
 import { signIn, signOut, useSession } from "next-auth/client";
 import Head from "next/head";
-import { Dialog } from "@reach/dialog";
-import "@reach/dialog/styles.css";
 import DrawerContent from "../components/DrawerContent";
+import Modal from "../components/Modal";
 //MUI
 import { IconButton, Button, Input, Drawer, Hidden } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
@@ -21,7 +20,7 @@ import {
     signup,
 } from "../utils/helpers";
 
-const drawerWidth = 220;
+const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -42,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     menuButton: {
-        marginRight: theme.spacing(2),
+        // marginRight: theme.spacing(2),
         [theme.breakpoints.up("sm")]: {
             display: "none",
         },
@@ -105,7 +104,7 @@ function MyApp({ Component, pageProps }) {
             {session && (
                 <div>
                     <div className={classes.appBar}>
-                        <div className="flex justify-between items-center px-12 h-full">
+                        <div className="flex justify-between items-center px-8 h-full">
                             <IconButton
                                 color="inherit"
                                 aria-label="open drawer"
@@ -172,46 +171,39 @@ function MyApp({ Component, pageProps }) {
                     </div>
                 </div>
             )}
-            <Dialog
-                className="z-50"
-                aria-label="Add a new collection"
-                isOpen={modal}
-                onDismiss={() => setModal(false)}
-            >
-                <div className="px-7 py-8">
-                    <form
-                        onSubmit={(e) =>
-                            addNewCollection(
-                                e,
-                                setModal,
-                                setCollections,
-                                session.user.userID
-                            )
-                        }
-                        className=""
-                    >
-                        <label className="text-2xl" htmlFor="name">
-                            Add a new collection
-                        </label>
-                        <Input
-                            className="w-full  pb-1 my-7 text-sm py-1 px-1"
-                            fullWidth
-                            placeholder="Collection name"
-                            type="text"
-                            name="name"
-                        />
+            <Modal className="z-50" setModal={setModal} modal={modal}>
+                <form
+                    className="px-7 py-8"
+                    onSubmit={(e) =>
+                        addNewCollection(
+                            e,
+                            setModal,
+                            setCollections,
+                            session.user.userID
+                        )
+                    }
+                >
+                    <label className="text-2xl" htmlFor="name">
+                        Add a new collection
+                    </label>
+                    <Input
+                        className="w-full  pb-1 my-7 text-sm py-1 px-1"
+                        fullWidth
+                        placeholder="Collection name"
+                        type="text"
+                        name="name"
+                    />
 
-                        <Button
-                            variant="contained"
-                            type="submit"
-                            color="primary"
-                            endIcon={<ArrowRightAltOutlinedIcon />}
-                        >
-                            Add
-                        </Button>
-                    </form>
-                </div>
-            </Dialog>
+                    <Button
+                        variant="contained"
+                        type="submit"
+                        color="primary"
+                        endIcon={<ArrowRightAltOutlinedIcon />}
+                    >
+                        Add
+                    </Button>
+                </form>
+            </Modal>
         </>
     );
 }

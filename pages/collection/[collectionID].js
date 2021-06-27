@@ -2,8 +2,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import "@reach/dialog/styles.css";
-import { Dialog } from "@reach/dialog";
+
 //MUI
 import {
 	IconButton,
@@ -12,14 +11,16 @@ import {
 	Input,
 	InputAdornment,
 } from "@material-ui/core";
+
 //Icons
 import DeleteIcon from "@material-ui/icons/Delete";
 import AddOutlinedIcon from "@material-ui/icons/AddOutlined";
 import ArrowRightAltOutlinedIcon from "@material-ui/icons/ArrowRightAltOutlined";
 import SearchIcon from "@material-ui/icons/Search";
 
-import { addNewLink, deleteLink } from "../../utils/helpers";
+import { addNewLink } from "../../utils/helpers";
 import LinkCard from "../../components/LinkCard";
+import Modal from "../../components/Modal";
 
 const Collection = (props) => {
 	const router = useRouter();
@@ -42,7 +43,6 @@ const Collection = (props) => {
 
 	useEffect(() => {
 		if (query !== "") {
-			console.log("running eff");
 			const filtered = links.filter(
 				(link) =>
 					link.metadata.title
@@ -61,11 +61,7 @@ const Collection = (props) => {
 			<Head>
 				<title>{name} | BookmarX</title>
 			</Head>
-			<Dialog
-				aria-label="Add a new bookmark"
-				isOpen={modal}
-				onDismiss={() => setModal(false)}
-			>
+			<Modal setModal={setModal} modal={modal}>
 				<form
 					className=" px-7 py-8"
 					onSubmit={(e) =>
@@ -99,9 +95,12 @@ const Collection = (props) => {
 						</Button>
 					</div>
 				</form>
-			</Dialog>
+			</Modal>
 			<div className="flex justify-between">
-				<h1 className="text-2xl text-gray-800 font-semibold">{name}</h1>
+				<input
+					className="text-gray-700 text-2xl font-semibold outline-none focus:border-gray-700 focus:border-b"
+					defaultValue={name}
+				/>
 				<div className="flex space-x-4">
 					<Input
 						value={query}
@@ -126,13 +125,21 @@ const Collection = (props) => {
 					</Button>
 				</div>
 			</div>
-			<div className="grid grid-cols-3 gap-6 grid-flow-col w-full my-8">
+			<div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10 w-full my-8">
 				{query.length > 0
 					? queryResults.map((link) => (
-							<LinkCard key={link._id} link={link} />
+							<LinkCard
+								key={link._id}
+								link={link}
+								setLinks={setLinks}
+							/>
 					  ))
 					: links.map((link) => (
-							<LinkCard key={link._id} link={link} />
+							<LinkCard
+								key={link._id}
+								link={link}
+								setLinks={setLinks}
+							/>
 					  ))}
 			</div>
 		</div>

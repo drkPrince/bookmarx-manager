@@ -24,7 +24,7 @@ const DrawerContent = ({
 	};
 
 	return (
-		<div className="pt-12 pl-1">
+		<div className="pt-12 ">
 			<Button onClick={signOut}>Sign out</Button>
 			<div className="px-2 flex justify-between items-center">
 				<h1 className="text-xs tracking-wider uppercase   text-gray-700">
@@ -39,30 +39,34 @@ const DrawerContent = ({
 			</div>
 
 			{collections && (
-				<div className="space-y-3 mt-5 pl-2 pr-0.5">
+				<div className="mt-5">
 					{collections.map((col) => (
 						<div
 							key={col._id}
 							className={
 								router.query.collectionID === `${col._id}`
-									? "text-blue-800 font-semibold flex justify-between  items-center"
-									: "text-gray-800 hover:text-blue-800 flex justify-between  items-center"
+									? "text-blue-50  flex justify-between  items-center bg-blue-600 py-1 pl-2"
+									: "text-gray-800 hover:text-blue-800 flex justify-between  items-center py-1 pl-2 hover:bg-blue-50"
 							}
 						>
 							<Link
 								href={`/collection/${col._id}?name=${col.name}`}
-								className="truncate text-sm"
+								className="truncate text-xs"
 							>
 								{col.name}
 							</Link>
 
-							<Button
+							<IconButton
 								aria-controls="simple-menu"
 								aria-haspopup="true"
 								onClick={handleOpen}
+								size="small"
 							>
-								<MoreVertIcon size="small" />
-							</Button>
+								<MoreVertIcon
+									color="inherit"
+									fontSize="small"
+								/>
+							</IconButton>
 							<Menu
 								id="simple-menu"
 								anchorEl={anchorEl}
