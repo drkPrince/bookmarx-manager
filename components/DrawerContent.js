@@ -43,8 +43,8 @@ const DrawerContent = ({ router, signOut, session, loading }) => {
 		}
 	}, [session, loading]);
 
-	const deleteCol = () => {
-		deleteCollection(col._id, setCollections);
+	const deleteCol = (id) => {
+		deleteCollection(id, setCollections);
 		handleClose();
 	};
 
@@ -69,7 +69,9 @@ const DrawerContent = ({ router, signOut, session, loading }) => {
 					open={Boolean(anchorEl)}
 					onClose={handleClose}
 				>
-					<MenuItem onClick={deleteCol}>Delete</MenuItem>
+					<MenuItem onClick={() => deleteCol(col._id)}>
+						Delete
+					</MenuItem>
 				</Menu>
 			</ListItem>
 		);
@@ -131,7 +133,9 @@ const DrawerContent = ({ router, signOut, session, loading }) => {
 								open={Boolean(anchorEl)}
 								onClose={handleClose}
 							>
-								<MenuItem onClick={deleteCol}>Delete</MenuItem>
+								<MenuItem onClick={() => deleteCol(col._id)}>
+									Delete
+								</MenuItem>
 							</Menu>
 						</ListItem>
 					))}

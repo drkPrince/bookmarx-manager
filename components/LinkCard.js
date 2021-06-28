@@ -12,12 +12,10 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import { deleteLink } from "../utils/helpers";
 import axios from "axios";
-
 import { useCtx } from "../ctx";
-
 import Modal from "./Modal";
 
-const LinkCard = ({ link, setLinks, currentCollection }) => {
+const LinkCard = ({ link, setLinks }) => {
 	const { collections } = useCtx();
 	const [anchorEl, setAnchorEl] = useState(null);
 	const [menu, setMenu] = useState(false);
@@ -36,12 +34,32 @@ const LinkCard = ({ link, setLinks, currentCollection }) => {
 		setModal(true);
 	};
 
-	const updateLink = (e) => {
+	const updateLink = async (e) => {
 		e.preventDefault();
-		axios.put("/api/link", {
+		setModal(false);
+		//first, change state
+		if (e.target.elements.collectionID.value !== link.collectionID) {
+			setLinks((links) => links.filter((l) => l._id !== link._id));
+		} else {
+			const theNewLink = {
+				...link,
+				metadata: {
+					...link.metadata,
+					title: e.target.elements.title.value,
+					description: e.target.elements.description.value,
+				},
+			};
+			setLinks((links) => {
+				const rest = links.filter((l) => l._id !== link._id);
+				return [...rest, theNewLink];
+			});
+		}
+		//then, change DB
+		await axios.put("/api/link", {
 			title: e.target.elements.title.value,
 			description: e.target.elements.description.value,
 			collectionID: e.target.elements.collectionID.value,
+			linkID: link._id,
 		});
 	};
 
@@ -93,7 +111,7 @@ const LinkCard = ({ link, setLinks, currentCollection }) => {
 				<MenuItem onClick={openEditModal}>Edit</MenuItem>
 			</Menu>
 			<Modal modal={modal} setModal={setModal}>
-				<form>
+				<form onSubmit={updateLink}>
 					<label className="text-2xl" htmlFor="name">
 						Edit link
 					</label>
@@ -121,7 +139,7 @@ const LinkCard = ({ link, setLinks, currentCollection }) => {
 
 					<Input
 						label="Description"
-						className="w-full pb-1 mt-1 mb-6 text-sm py-1 px-1 text-gray-500 leading-6"
+						className="w-full pb-1 mt-1 mb-6 text-sm py-1 px-1 text-gray-500 leading-loose"
 						fullWidth
 						multiline
 						type="text"
@@ -131,10 +149,8 @@ const LinkCard = ({ link, setLinks, currentCollection }) => {
 
 					<Select
 						className="w-full pb-1 mt-1 mb-6 text-sm py-1 px-1 text-gray-500"
-						labelId="demo-simple-select-label"
-						id="demo-simple-select"
-						defaultValue={currentCollection._id}
-						// onChange={handleChange}
+						name="collectionID"
+						defaultValue={link.collectionID}
 					>
 						{collections &&
 							collections.map((x) => (

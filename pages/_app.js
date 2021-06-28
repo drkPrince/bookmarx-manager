@@ -1,23 +1,35 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "../css/style.css";
 import "../css/global.css";
 import { useRouter } from "next/router";
 import { signIn, signOut, useSession } from "next-auth/client";
 import Head from "next/head";
 import DrawerContent from "../components/DrawerContent";
-import Provider, { useCtx, MainContext } from "../ctx";
+import Provider from "../ctx";
 //MUI
 import { IconButton, Button, Input, Drawer, Hidden } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import {
+    createMuiTheme,
+    makeStyles,
+    ThemeProvider,
+    useTheme,
+} from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
 
-import {
-    getCollections,
-    addNewCollection,
-    deleteCollection,
-    signup,
-} from "../utils/helpers";
+import { indigo, lightBlue } from "@material-ui/core/colors";
+
+import { signup } from "../utils/helpers";
+
+const myTheme = createMuiTheme({
+    typography: {
+        fontFamily: ["Inter", "sans-serif"],
+    },
+    palette: {
+        primary: indigo,
+        secondary: lightBlue,
+    },
+});
 
 const drawerWidth = 240;
 
@@ -64,12 +76,6 @@ function MyApp({ Component, pageProps }) {
     const router = useRouter();
     const [session, loading] = useSession();
 
-    // useEffect(() => {
-    //     if (!loading && session?.user) {
-    //         getCollections(session.user.userID, setCollections);
-    //     }
-    // }, [session, loading]);
-
     if (loading) return <p>Loading</p>;
 
     return (
@@ -100,7 +106,7 @@ function MyApp({ Component, pageProps }) {
                 </>
             )}
             {session && (
-                <div>
+                <ThemeProvider theme={myTheme}>
                     <div className={classes.appBar}>
                         <div className="flex justify-between items-center px-8 h-full">
                             <IconButton
@@ -166,7 +172,7 @@ function MyApp({ Component, pageProps }) {
                             <Component {...pageProps} />
                         </main>
                     </div>
-                </div>
+                </ThemeProvider>
             )}
         </Provider>
     );

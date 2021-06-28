@@ -4,13 +4,10 @@ body {
   font-family: "Inter", sans-serif !important;
 }
 
-nav {
-  height: 8vh;
-}
-
-aside {
+/*aside {
   background: #fafafafa;
   height: 92vh;
   overflow: hidden;
   transition: all 0.5s ease-in-out;
 }
+*/

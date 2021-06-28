@@ -56,6 +56,23 @@ export default async function (req, res) {
 			}
 			break;
 
+		case "PUT":
+			console.log(body);
+			try {
+				const response = await Link.findOneAndUpdate(
+					{ _id: body.linkID },
+					{
+						"metadata.title": body.title,
+						"metadata.description": body.description,
+						collectionID: body.collectionID,
+					}
+				);
+				res.status(200).json({ success: true });
+			} catch (e) {
+				res.status(400).json({ success: false });
+			}
+			break;
+
 		default:
 			res.status(400).json({ success: false });
 			break;

@@ -7,17 +7,17 @@ import User from "../../../models/User.model.js";
 export default NextAuth({
     callbacks: {
         async jwt(token, user, account, profile, isNewUser) {
-            console.log("--JWT");
+            // console.log("--JWT");
             if (user) {
                 token.user = user._id;
             }
-            console.log(token, user, account, profile, isNewUser);
+            // console.log(token, user, account, profile, isNewUser);
             return token;
         },
         async session(session, user) {
-            console.log("---SESSION");
+            // console.log("---SESSION");
             session.user.userID = user.user;
-            console.log(session, user);
+            // console.log(session, user);
             return session;
         },
     },

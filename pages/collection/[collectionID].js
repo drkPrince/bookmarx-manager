@@ -134,7 +134,6 @@ const Collection = (props) => {
 								key={link._id}
 								link={link}
 								setLinks={setLinks}
-								currentCollection={currentCollection}
 							/>
 					  ))
 					: links.map((link) => (
@@ -142,7 +141,6 @@ const Collection = (props) => {
 								key={link._id}
 								link={link}
 								setLinks={setLinks}
-								currentCollection={currentCollection}
 							/>
 					  ))}
 			</div>
