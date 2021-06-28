@@ -5,13 +5,12 @@ import { useRouter } from "next/router";
 import { signIn, signOut, useSession } from "next-auth/client";
 import Head from "next/head";
 import DrawerContent from "../components/DrawerContent";
-import Modal from "../components/Modal";
+import Provider, { useCtx, MainContext } from "../ctx";
 //MUI
 import { IconButton, Button, Input, Drawer, Hidden } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
-import ArrowRightAltOutlinedIcon from "@material-ui/icons/ArrowRightAltOutlined";
 
 import {
     getCollections,
@@ -60,22 +59,21 @@ function MyApp({ Component, pageProps }) {
     const classes = useStyles();
     const theme = useTheme();
     const [drawer, setDrawer] = useState(false);
-    const [modal, setModal] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
     const [collections, setCollections] = useState(null);
     const router = useRouter();
     const [session, loading] = useSession();
 
-    useEffect(() => {
-        if (!loading && session?.user) {
-            getCollections(session.user.userID, setCollections);
-        }
-    }, [session, loading]);
+    // useEffect(() => {
+    //     if (!loading && session?.user) {
+    //         getCollections(session.user.userID, setCollections);
+    //     }
+    // }, [session, loading]);
 
     if (loading) return <p>Loading</p>;
 
     return (
-        <>
+        <Provider>
             <Head>
                 <title>BookmarX</title>
             </Head>
@@ -138,11 +136,10 @@ function MyApp({ Component, pageProps }) {
                                 >
                                     <DrawerContent
                                         className="pt-12"
-                                        setModal={setModal}
                                         router={router}
-                                        collections={collections}
-                                        setCollections={setCollections}
+                                        loading={loading}
                                         signOut={signOut}
+                                        session={session}
                                     />
                                 </Drawer>
                             </Hidden>
@@ -156,10 +153,10 @@ function MyApp({ Component, pageProps }) {
                                 >
                                     <DrawerContent
                                         className="pt-12"
-                                        setModal={setModal}
                                         router={router}
-                                        collections={collections}
+                                        loading={loading}
                                         signOut={signOut}
+                                        session={session}
                                     />
                                 </Drawer>
                             </Hidden>
@@ -171,40 +168,7 @@ function MyApp({ Component, pageProps }) {
                     </div>
                 </div>
             )}
-            <Modal className="z-50" setModal={setModal} modal={modal}>
-                <form
-                    className="px-7 py-8"
-                    onSubmit={(e) =>
-                        addNewCollection(
-                            e,
-                            setModal,
-                            setCollections,
-                            session.user.userID
-                        )
-                    }
-                >
-                    <label className="text-2xl" htmlFor="name">
-                        Add a new collection
-                    </label>
-                    <Input
-                        className="w-full  pb-1 my-7 text-sm py-1 px-1"
-                        fullWidth
-                        placeholder="Collection name"
-                        type="text"
-                        name="name"
-                    />
-
-                    <Button
-                        variant="contained"
-                        type="submit"
-                        color="primary"
-                        endIcon={<ArrowRightAltOutlinedIcon />}
-                    >
-                        Add
-                    </Button>
-                </form>
-            </Modal>
-        </>
+        </Provider>
     );
 }
 

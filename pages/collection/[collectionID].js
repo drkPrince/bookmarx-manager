@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import { useState, useEffect } from "react";
 import axios from "axios";
-
+import { useCtx } from "../../ctx";
 //MUI
 import {
 	IconButton,
@@ -24,7 +24,10 @@ import Modal from "../../components/Modal";
 
 const Collection = (props) => {
 	const router = useRouter();
-	const { collectionID, name } = router.query;
+	const { collections } = useCtx();
+	const { collectionID } = router.query;
+	const currentCollection = collections.find((x) => x._id === collectionID);
+	console.log(currentCollection);
 	const [links, setLinks] = useState([]);
 	const [queryResults, setQueryResults] = useState([]);
 	const [query, setQuery] = useState("");
@@ -59,11 +62,10 @@ const Collection = (props) => {
 	return (
 		<div className="px-8 py-4 w-full">
 			<Head>
-				<title>{name} | BookmarX</title>
+				<title>{currentCollection?.name} | BookmarX</title>
 			</Head>
 			<Modal setModal={setModal} modal={modal}>
 				<form
-					className=" px-7 py-8"
 					onSubmit={(e) =>
 						addNewLink(e, setModal, collectionID, setLinks)
 					}
@@ -99,7 +101,7 @@ const Collection = (props) => {
 			<div className="flex justify-between">
 				<input
 					className="text-gray-700 text-2xl font-semibold outline-none focus:border-gray-700 focus:border-b"
-					defaultValue={name}
+					defaultValue={currentCollection?.name}
 				/>
 				<div className="flex space-x-4">
 					<Input
@@ -119,7 +121,7 @@ const Collection = (props) => {
 						variant="contained"
 						color="primary"
 						size="small"
-						startIcon={<AddOutlinedIcon />}
+						startIcon={<AddOutlinedIcon fontSize="small" />}
 					>
 						Add new
 					</Button>
@@ -132,6 +134,7 @@ const Collection = (props) => {
 								key={link._id}
 								link={link}
 								setLinks={setLinks}
+								currentCollection={currentCollection}
 							/>
 					  ))
 					: links.map((link) => (
@@ -139,6 +142,7 @@ const Collection = (props) => {
 								key={link._id}
 								link={link}
 								setLinks={setLinks}
+								currentCollection={currentCollection}
 							/>
 					  ))}
 			</div>

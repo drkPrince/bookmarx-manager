@@ -8,7 +8,7 @@ const Modal = ({ modal, setModal, children }) => {
 			isOpen={modal}
 			onDismiss={() => setModal(false)}
 		>
-			{children}
+			<div className="px-7 py-8">{children}</div>
 		</Dialog>
 	);
 };
