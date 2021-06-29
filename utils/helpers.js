@@ -21,7 +21,6 @@ export const deleteCollection = async (id, setCollections) => {
 	await axios.delete("/api/collection", {
 		data: { collectionID: id },
 	});
-	router.push("/");
 };
 
 export const signup = (e) => {
@@ -47,4 +46,14 @@ export const addNewLink = async (e, setModal, collectionID, setLinks) => {
 export const deleteLink = async (id, setLinks) => {
 	setLinks((links) => links.filter((x) => x._id !== id));
 	await axios.delete("/api/link", { data: { linkID: id } });
+};
+
+export const debounce = (callback, wait) => {
+	let timeoutId = null;
+	return (...args) => {
+		window.clearTimeout(timeoutId);
+		timeoutId = window.setTimeout(() => {
+			callback.apply(null, args);
+		}, wait);
+	};
 };

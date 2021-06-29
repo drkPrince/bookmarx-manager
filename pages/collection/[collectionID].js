@@ -26,8 +26,9 @@ const Collection = (props) => {
 	const router = useRouter();
 	const { collections } = useCtx();
 	const { collectionID } = router.query;
-	const currentCollection = collections.find((x) => x._id === collectionID);
-	console.log(currentCollection);
+	const collectionName = collections?.find(
+		(c) => c._id === collectionID
+	)?.name;
 	const [links, setLinks] = useState([]);
 	const [queryResults, setQueryResults] = useState([]);
 	const [query, setQuery] = useState("");
@@ -62,7 +63,7 @@ const Collection = (props) => {
 	return (
 		<div className="px-8 py-4 w-full">
 			<Head>
-				<title>{currentCollection?.name} | BookmarX</title>
+				<title>{collectionName} | BookmarX</title>
 			</Head>
 			<Modal setModal={setModal} modal={modal}>
 				<form
@@ -98,11 +99,10 @@ const Collection = (props) => {
 					</div>
 				</form>
 			</Modal>
-			<div className="flex justify-between">
-				<input
-					className="text-gray-700 text-2xl font-semibold outline-none focus:border-gray-700 focus:border-b"
-					defaultValue={currentCollection?.name}
-				/>
+			<div className="flex justify-between items-center">
+				<h2 className="font-semibold text-3xl text-gray-700">
+					{collectionName}
+				</h2>
 				<div className="flex space-x-4">
 					<Input
 						value={query}

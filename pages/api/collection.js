@@ -35,6 +35,18 @@ export default async function handler(req, res) {
                 res.status(400).json({ success: false });
             }
             break;
+
+        case "PUT":
+            try {
+                await Collection.findOneAndUpdate(
+                    { _id: body.collectionID },
+                    { name: body.newName }
+                );
+                res.status(200).json({ success: true });
+            } catch (e) {
+                res.status(400).json({ success: false });
+            }
+            break;
         default:
             res.status(400).json({ success: false });
             break;
