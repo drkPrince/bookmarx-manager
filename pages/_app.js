@@ -1,9 +1,13 @@
 import { useState } from "react";
 import "../css/style.css";
 import "../css/global.css";
+import "../css/nprogress.css";
+import "@reach/dialog/styles.css";
+// import NProgress from "nprogress";
 import { useRouter } from "next/router";
 import { signIn, signOut, useSession } from "next-auth/client";
 import Head from "next/head";
+import Router from "next/router";
 import DrawerContent from "../components/DrawerContent";
 import Provider from "../ctx";
 //MUI
@@ -66,6 +70,10 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
     },
 }));
+
+// Router.events.on("routeChangeStart", () => NProgress.start());
+// Router.events.on("routeChangeComplete", () => NProgress.done());
+// Router.events.on("routeChangeError", () => NProgress.done());
 
 function MyApp({ Component, pageProps }) {
     const classes = useStyles();

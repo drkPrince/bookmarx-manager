@@ -1,4 +1,3 @@
-import "@reach/dialog/styles.css";
 import { Dialog } from "@reach/dialog";
 
 const Modal = ({ modal, setModal, children }) => {

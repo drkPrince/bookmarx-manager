@@ -10,6 +10,7 @@ import {
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
+import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
 import { deleteLink } from "../utils/helpers";
 import axios from "axios";
 import { useCtx } from "../ctx";
@@ -20,18 +21,19 @@ const LinkCard = ({ link, setLinks }) => {
 	const [anchorEl, setAnchorEl] = useState(null);
 	const [menu, setMenu] = useState(false);
 	const [modal, setModal] = useState(false);
+	const [warnModal, setWarnModal] = useState(false);
 
-	const handleOpen = (event) => {
-		setAnchorEl(event.currentTarget);
-	};
-
-	const handleClose = () => {
-		setAnchorEl(null);
-	};
+	const handleOpen = (event) => setAnchorEl(event.currentTarget);
+	const handleClose = () => setAnchorEl(null);
 
 	const openEditModal = () => {
 		handleClose();
 		setModal(true);
+	};
+
+	const openDeleteModal = () => {
+		handleClose();
+		setWarnModal(true);
 	};
 
 	const updateLink = async (e) => {
@@ -107,7 +109,7 @@ const LinkCard = ({ link, setLinks }) => {
 				open={Boolean(anchorEl)}
 				onClose={handleClose}
 			>
-				<MenuItem onClick={handleClose}>Delete</MenuItem>
+				<MenuItem onClick={openDeleteModal}>Delete</MenuItem>
 				<MenuItem onClick={openEditModal}>Edit</MenuItem>
 			</Menu>
 			<Modal modal={modal} setModal={setModal}>
@@ -164,6 +166,21 @@ const LinkCard = ({ link, setLinks }) => {
 						Update
 					</Button>
 				</form>
+			</Modal>
+			<Modal modal={warnModal} setModal={setWarnModal}>
+				<div className="flex items-center mb-6">
+					<ErrorOutlineIcon fontSize="large" />
+					<h2 className="text-2xl text-gray-800 ml-4">
+						Are you sure you want to delete this link?
+					</h2>
+				</div>
+				<Button
+					onClick={() => deleteLink(link._id, setLinks)}
+					variant="contained"
+					color="primary"
+				>
+					Yes, Delete
+				</Button>
 			</Modal>
 			{/*<div className="flex justify-end">
 				<IconButton

@@ -13,11 +13,10 @@ import {
 } from "@material-ui/core";
 import Modal from "../components/Modal";
 import NavItem from "../components/NavItem";
-
+import { Skeleton } from "@material-ui/lab";
 import DeleteIcon from "@material-ui/icons/Delete";
 import InboxIcon from "@material-ui/icons/Inbox";
 import AddOutlinedIcon from "@material-ui/icons/AddOutlined";
-import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded";
 import ExitToAppRoundedIcon from "@material-ui/icons/ExitToAppRounded";
 import ArrowRightAltOutlinedIcon from "@material-ui/icons/ArrowRightAltOutlined";
 
@@ -30,20 +29,22 @@ const DrawerContent = ({ router, signOut, session, loading }) => {
 	const [menu, setMenu] = useState(false);
 	const [modal, setModal] = useState(false);
 
+	const [contentLoading, setLoading] = useState(false);
+
 	useEffect(() => {
 		if (!loading && session?.user) {
+			setLoading(true);
 			getCollections(session.user.userID, setCollections);
+			setLoading(false);
 		}
 	}, [session, loading]);
 
 	return (
 		<div className="pt-12">
-			<div className="mb-5">
-				<div className=" px-4 flex items-center">
-					<AccountCircleRoundedIcon fontSize="large" />
-					<h2 className="ml-1">Prince Kumar</h2>
-				</div>
-			</div>
+			<h1 className="font-thin text-gray-700 text-4xl pl-4 mt-3 mb-6">
+				Bookmarx
+			</h1>
+
 			<div className="px-4 flex justify-between items-center">
 				<h1 className="text-xs tracking-wider uppercase text-gray-700">
 					Collections

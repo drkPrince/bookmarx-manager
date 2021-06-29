@@ -17,13 +17,13 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import AddOutlinedIcon from "@material-ui/icons/AddOutlined";
 import ArrowRightAltOutlinedIcon from "@material-ui/icons/ArrowRightAltOutlined";
 import SearchIcon from "@material-ui/icons/Search";
-
 import { addNewLink } from "../../utils/helpers";
 import LinkCard from "../../components/LinkCard";
 import Modal from "../../components/Modal";
 
 const Collection = (props) => {
 	const router = useRouter();
+	const [addingLink, setAddingLink] = useState(false);
 	const { collections } = useCtx();
 	const { collectionID } = router.query;
 	const collectionName = collections?.find(
@@ -37,6 +37,7 @@ const Collection = (props) => {
 	useEffect(() => {
 		(async () => {
 			if (collectionID) {
+				setLinks([]);
 				const res = await axios.get(
 					`/api/link?collectionID=${collectionID}`
 				);
@@ -100,7 +101,7 @@ const Collection = (props) => {
 				</form>
 			</Modal>
 			<div className="flex justify-between items-center">
-				<h2 className="font-semibold text-3xl text-gray-700">
+				<h2 className="font-semibold text-2xl text-gray-700">
 					{collectionName}
 				</h2>
 				<div className="flex space-x-4">

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Link from "next/link";
+import axios from "axios";
 
 import {
 	IconButton,
@@ -9,6 +10,7 @@ import {
 	MenuItem,
 	ListItem,
 } from "@material-ui/core";
+import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
 
 import Modal from "../components/Modal";
 
@@ -19,20 +21,25 @@ import ArrowRightAltOutlinedIcon from "@material-ui/icons/ArrowRightAltOutlined"
 
 const NavItem = ({ col, isHighlighted, setCollections, goHome }) => {
 	const [renameModal, setRenameModal] = useState(false);
-
+	const [warnModal, setWarnModal] = useState(false);
 	const [anchorEl, setAnchorEl] = useState(null);
 	const openMenu = (e) => setAnchorEl(e.currentTarget);
 	const closeMenu = () => setAnchorEl(null);
 
 	const deleteCol = (id) => {
 		closeMenu();
-		deleteCollection(id, setCollections);
 		goHome();
+		deleteCollection(id, setCollections);
 	};
 
 	const openRenameModal = () => {
 		closeMenu();
 		setRenameModal(true);
+	};
+
+	const openDeleteModal = () => {
+		closeMenu();
+		setWarnModal(true);
 	};
 
 	const changeCollectionName = async (e, cid) => {
@@ -76,7 +83,7 @@ const NavItem = ({ col, isHighlighted, setCollections, goHome }) => {
 				open={Boolean(anchorEl)}
 				onClose={closeMenu}
 			>
-				<MenuItem onClick={() => deleteCol(col._id)}>Delete</MenuItem>
+				<MenuItem onClick={openDeleteModal}>Delete</MenuItem>
 				<MenuItem onClick={openRenameModal}>Rename</MenuItem>
 			</Menu>
 			<Modal
@@ -105,6 +112,21 @@ const NavItem = ({ col, isHighlighted, setCollections, goHome }) => {
 						Rename
 					</Button>
 				</form>
+			</Modal>
+			<Modal modal={warnModal} setModal={setWarnModal}>
+				<div className="flex items-center mb-6">
+					<ErrorOutlineIcon fontSize="large" />
+					<h2 className="text-2xl text-gray-800 ml-4">
+						Are you sure you want to delete this collection?
+					</h2>
+				</div>
+				<Button
+					onClick={() => deleteCol(col._id)}
+					variant="contained"
+					color="primary"
+				>
+					Yes, Delete
+				</Button>
 			</Modal>
 		</ListItem>
 	);

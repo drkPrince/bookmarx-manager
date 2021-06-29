@@ -1,19 +1,23 @@
 import axios from "axios";
+import NProgress from "nprogress";
 
 export const getCollections = async (userID, setCollections) => {
+	NProgress.start();
 	const { data } = await axios.get(`/api/collection?user=${userID}`);
 	setCollections(data.data);
+	NProgress.done();
 };
 
 export const addNewCollection = async (e, setModal, setCollections, userID) => {
 	e.preventDefault();
+	NProgress.start();
 	setModal(false);
 	const res = await axios.post("/api/collection", {
 		name: e.target.elements.name.value,
 		user: userID,
 	});
 	setCollections((collections) => [...collections, res.data.data]);
-	e.target.reset();
+	NProgress.done();
 };
 
 export const deleteCollection = async (id, setCollections) => {
@@ -35,12 +39,14 @@ export const signup = (e) => {
 
 export const addNewLink = async (e, setModal, collectionID, setLinks) => {
 	e.preventDefault();
+	NProgress.start();
 	setModal(false);
 	const res = await axios.post("/api/link", {
 		url: e.target.elements.url.value,
 		collectionID,
 	});
 	setLinks((links) => [...links, res.data.data]);
+	NProgress.done();
 };
 
 export const deleteLink = async (id, setLinks) => {
