@@ -44,7 +44,7 @@ export const signUp = async (e, signIn, setError, setBusy) => {
 			user: user.data._id,
 		});
 		NProgress.done();
-		signIn(null, { callbackUrl: "http://localhost:3000" });
+		signIn(null, { callbackUrl: "https://bookmarx.vercel.app" });
 	} catch (e) {
 		setError(e.response.data.error);
 		console.dir(e);
