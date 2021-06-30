@@ -115,7 +115,6 @@ const LinkCard = ({ link, setLinks }) => {
 			<Modal modal={modal} setModal={setModal}>
 				<form onSubmit={updateLink}>
 					<h2 className="text-2xl">Edit link</h2>
-
 					<label
 						className="block mt-7 text-sm text-indigo-800"
 						htmlFor="title"

@@ -68,12 +68,14 @@ const DrawerContent = ({ router, signOut, session, loading }) => {
 					))}
 				</List>
 			)}
-			<div className="absolute bottom-0 left-0 flex px-4 py-3 items-center">
+			<div className="absolute bottom-0 left-0 flex px-4 py-3 items-center z-30">
 				<Button
 					className="flex"
 					size="small"
 					variant="outlined"
-					onClick={() => signOut()}
+					onClick={() =>
+						signOut({ callbackUrl: process.env.NEXTAUTH_URL })
+					}
 				>
 					<span>Logout</span>
 				</Button>

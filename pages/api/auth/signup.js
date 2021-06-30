@@ -6,7 +6,6 @@ export default async function signup(req, res) {
 		case "POST":
 			try {
 				const exists = await User.findOne({ username: body.username });
-				console.log(exists);
 				if (exists) {
 					res.status(400).json({
 						success: false,
