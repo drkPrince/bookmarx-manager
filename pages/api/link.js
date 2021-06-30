@@ -41,7 +41,10 @@ export default async function (req, res) {
 				});
 				res.status(201).json({ success: true, data: newLink });
 			} catch (error) {
-				res.status(400).json({ success: false });
+				res.status(400).json({
+					success: false,
+					error: "Please enter a valid URL",
+				});
 			}
 			break;
 

@@ -29,7 +29,6 @@ export default NextAuth({
                 username: {
                     label: "Username",
                     type: "text",
-                    placeholder: "username",
                 },
                 password: { label: "Password", type: "password" },
             },

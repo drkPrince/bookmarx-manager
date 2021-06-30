@@ -2,7 +2,9 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import NProgress from "nprogress";
 import { useCtx } from "../../ctx";
+
 //MUI
 import {
 	IconButton,
@@ -17,6 +19,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import AddOutlinedIcon from "@material-ui/icons/AddOutlined";
 import ArrowRightAltOutlinedIcon from "@material-ui/icons/ArrowRightAltOutlined";
 import SearchIcon from "@material-ui/icons/Search";
+
 import { addNewLink } from "../../utils/helpers";
 import LinkCard from "../../components/LinkCard";
 import Modal from "../../components/Modal";
@@ -33,15 +36,19 @@ const Collection = (props) => {
 	const [queryResults, setQueryResults] = useState([]);
 	const [query, setQuery] = useState("");
 	const [modal, setModal] = useState(false);
+	const [error, setError] = useState(null);
+	const [busy, setBusy] = useState(false);
 
 	useEffect(() => {
 		(async () => {
 			if (collectionID) {
 				setLinks([]);
+				NProgress.start();
 				const res = await axios.get(
 					`/api/link?collectionID=${collectionID}`
 				);
 				setLinks(res.data.data);
+				NProgress.done();
 			}
 		})();
 	}, [collectionID]);
@@ -61,50 +68,61 @@ const Collection = (props) => {
 		}
 	}, [links, query]);
 
+	const Grid = () => {
+		return query.length > 0
+			? queryResults.map((link) => (
+					<LinkCard key={link._id} link={link} setLinks={setLinks} />
+			  ))
+			: links.map((link) => (
+					<LinkCard key={link._id} link={link} setLinks={setLinks} />
+			  ));
+	};
+
 	return (
-		<div className="px-8 py-4 w-full">
+		<div className="px-8 py-7 w-full">
 			<Head>
 				<title>{collectionName} | BookmarX</title>
 			</Head>
 			<Modal setModal={setModal} modal={modal}>
 				<form
 					onSubmit={(e) =>
-						addNewLink(e, setModal, collectionID, setLinks)
+						addNewLink(
+							e,
+							setModal,
+							collectionID,
+							setLinks,
+							setError,
+							setBusy
+						)
 					}
 				>
 					<h2 className="text-2xl text-gray-800">Add a new Link</h2>
+					{error && <p className="text-red-600">{error}</p>}
 					<Input
 						className="w-full  pb-1 my-7 text-sm py-1 px-1"
 						fullWidth
+						error={error}
 						placeholder="http://"
 						type="url"
 						name="url"
 					/>
 
-					<div className="flex space-x-4">
-						<Button
-							variant="contained"
-							type="submit"
-							color="primary"
-							endIcon={<ArrowRightAltOutlinedIcon />}
-						>
-							Add link
-						</Button>
-						<Button
-							variant="outlined"
-							color="secondary"
-							onClick={() => setModal(false)}
-						>
-							Cancel
-						</Button>
-					</div>
+					<Button
+						variant="contained"
+						type="submit"
+						disabled={busy}
+						color="primary"
+						endIcon={<ArrowRightAltOutlinedIcon />}
+					>
+						Add link
+					</Button>
 				</form>
 			</Modal>
-			<div className="flex justify-between items-center">
-				<h2 className="font-semibold text-2xl text-gray-700">
+			<div className="flex flex-col sm:flex-row justify-between sm:items-center">
+				<h2 className="font-semibold text-2xl text-gray-700 text-left">
 					{collectionName}
 				</h2>
-				<div className="flex space-x-4">
+				<div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-5 sm:mt-0">
 					<Input
 						value={query}
 						onChange={(e) => setQuery(e.target.value)}
@@ -128,23 +146,20 @@ const Collection = (props) => {
 					</Button>
 				</div>
 			</div>
-			<div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10 w-full my-8">
-				{query.length > 0
-					? queryResults.map((link) => (
-							<LinkCard
-								key={link._id}
-								link={link}
-								setLinks={setLinks}
-							/>
-					  ))
-					: links.map((link) => (
-							<LinkCard
-								key={link._id}
-								link={link}
-								setLinks={setLinks}
-							/>
-					  ))}
-			</div>
+			{links.length > 0 ? (
+				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10 w-full my-8 md:my-12">
+					<Grid />
+				</div>
+			) : (
+				<div className="flex justify-center w-full mt-16">
+					<div className="w-1/3">
+						<h2 className="text-center text-gray-600">
+							It's all empty here. Maybe add something?
+						</h2>
+						<img src="/empty.png" alt="its all empty" />
+					</div>
+				</div>
+			)}
 		</div>
 	);
 };

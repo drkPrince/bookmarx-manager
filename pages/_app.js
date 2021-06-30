@@ -2,13 +2,12 @@ import { useState } from "react";
 import "../css/style.css";
 import "../css/global.css";
 import "../css/nprogress.css";
-import "@reach/dialog/styles.css";
-// import NProgress from "nprogress";
 import { useRouter } from "next/router";
 import { signIn, signOut, useSession } from "next-auth/client";
 import Head from "next/head";
 import Router from "next/router";
 import DrawerContent from "../components/DrawerContent";
+import Home from "../components/Home";
 import Provider from "../ctx";
 //MUI
 import { IconButton, Button, Input, Drawer, Hidden } from "@material-ui/core";
@@ -23,14 +22,14 @@ import MenuIcon from "@material-ui/icons/Menu";
 
 import { indigo, lightBlue } from "@material-ui/core/colors";
 
-import { signup } from "../utils/helpers";
-
 const myTheme = createMuiTheme({
     typography: {
         fontFamily: ["Inter", "sans-serif"],
     },
     palette: {
-        primary: indigo,
+        primary: {
+            main: "#205be1",
+        },
         secondary: lightBlue,
     },
 });
@@ -56,7 +55,8 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     menuButton: {
-        // marginRight: theme.spacing(2),
+        marginTop: theme.spacing(5),
+        marginBottom: theme.spacing(3),
         [theme.breakpoints.up("sm")]: {
             display: "none",
         },
@@ -71,48 +71,24 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-// Router.events.on("routeChangeStart", () => NProgress.start());
-// Router.events.on("routeChangeComplete", () => NProgress.done());
-// Router.events.on("routeChangeError", () => NProgress.done());
-
 function MyApp({ Component, pageProps }) {
     const classes = useStyles();
     const theme = useTheme();
+    const router = useRouter();
     const [drawer, setDrawer] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
-    const [collections, setCollections] = useState(null);
-    const router = useRouter();
     const [session, loading] = useSession();
 
-    if (loading) return <p>Loading</p>;
+    if (loading) return <div className="spin" />;
 
     return (
         <Provider>
             <Head>
                 <title>BookmarX</title>
             </Head>
-            {!session && (
-                <>
-                    Not signed in <br />
-                    <button onClick={() => signIn()}>Sign in</button>
-                    <div className="p-12">
-                        <h1 className="text-2xl">Create an account</h1>
-                        <form className="mt-6" onSubmit={signup}>
-                            <input
-                                type="text"
-                                name="username"
-                                placeholder="Username"
-                            />
-                            <input
-                                type="password"
-                                name="password"
-                                placeholder="Password"
-                            />
-                            <button>Signup</button>
-                        </form>
-                    </div>
-                </>
-            )}
+
+            {!session && <Home signIn={signIn} />}
+
             {session && (
                 <ThemeProvider theme={myTheme}>
                     <div className={classes.appBar}>
@@ -149,7 +125,6 @@ function MyApp({ Component, pageProps }) {
                                     }}
                                 >
                                     <DrawerContent
-                                        className="pt-12"
                                         router={router}
                                         loading={loading}
                                         signOut={signOut}

@@ -114,18 +114,16 @@ const LinkCard = ({ link, setLinks }) => {
 			</Menu>
 			<Modal modal={modal} setModal={setModal}>
 				<form onSubmit={updateLink}>
-					<label className="text-2xl" htmlFor="name">
-						Edit link
-					</label>
+					<h2 className="text-2xl">Edit link</h2>
 
 					<label
-						className="block mt-7 text-sm text-gray-700"
+						className="block mt-7 text-sm text-indigo-800"
 						htmlFor="title"
 					>
 						Title:
 					</label>
 					<Input
-						className="w-full pb-1 mt-1 text-sm py-1 px-1 text-gray-500"
+						className="pb-1 mt-1 text-sm py-1 px-1 text-gray-500"
 						fullWidth
 						type="text"
 						defaultValue={link.metadata.title}
@@ -133,7 +131,7 @@ const LinkCard = ({ link, setLinks }) => {
 					/>
 
 					<label
-						className="block mt-7 text-sm text-gray-700"
+						className="block mt-7 text-sm text-indigo-800"
 						htmlFor="description"
 					>
 						Description:
@@ -141,13 +139,20 @@ const LinkCard = ({ link, setLinks }) => {
 
 					<Input
 						label="Description"
-						className="w-full pb-1 mt-1 mb-6 text-sm py-1 px-1 text-gray-500 leading-loose"
+						className="pb-1 mt-1 text-sm py-1 px-1 text-gray-500 leading-loose"
 						fullWidth
 						multiline
 						type="text"
 						defaultValue={link.metadata.description}
 						name="description"
 					/>
+
+					<label
+						className="block mt-7 text-sm text-indigo-800"
+						htmlFor="collectionID"
+					>
+						Collection
+					</label>
 
 					<Select
 						className="w-full pb-1 mt-1 mb-6 text-sm py-1 px-1 text-gray-500"
