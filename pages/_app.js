@@ -20,8 +20,6 @@ import {
 } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
 
-import { indigo, lightBlue } from "@material-ui/core/colors";
-
 const myTheme = createMuiTheme({
     typography: {
         fontFamily: ["Inter", "sans-serif"],
@@ -30,7 +28,6 @@ const myTheme = createMuiTheme({
         primary: {
             main: "#205be1",
         },
-        secondary: lightBlue,
     },
 });
 
@@ -48,15 +45,20 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     appBar: {
-        height: "7vh",
+        height: "8vh",
         [theme.breakpoints.up("sm")]: {
             width: `calc(100% - ${drawerWidth}px)`,
             marginLeft: drawerWidth,
         },
+        [theme.breakpoints.down("sm")]: {
+            backgroundColor: "#205be1",
+        },
     },
     menuButton: {
-        marginTop: theme.spacing(5),
-        marginBottom: theme.spacing(3),
+        // marginTop: theme.spacing(5),
+        // marginBottom: theme.spacing(3),
+        padding: "0 1rem",
+        color: "white",
         [theme.breakpoints.up("sm")]: {
             display: "none",
         },

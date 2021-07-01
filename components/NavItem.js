@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import axios from "axios";
-
+import { makeStyles } from "@material-ui/core/styles";
 import {
 	IconButton,
 	Button,
@@ -9,27 +9,36 @@ import {
 	Input,
 	MenuItem,
 	ListItem,
+	Avatar,
 } from "@material-ui/core";
 import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
-
+import FolderIconRounded from "@material-ui/icons/FolderRounded";
 import Modal from "../components/Modal";
-
 import { deleteCollection } from "../utils/helpers";
-
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import ArrowRightAltOutlinedIcon from "@material-ui/icons/ArrowRightAltOutlined";
 
-const NavItem = ({ col, isHighlighted, setCollections, goHome }) => {
+const useStyles = makeStyles((theme) => ({
+	small: {
+		width: "1.7rem",
+		height: "1.7rem",
+		marginRight: "0.5rem",
+		backgroundColor: "#205be199",
+	},
+}));
+
+const NavItem = ({ col, isHighlighted, setCollections, goToHome }) => {
+	const classes = useStyles();
 	const [renameModal, setRenameModal] = useState(false);
 	const [warnModal, setWarnModal] = useState(false);
 	const [anchorEl, setAnchorEl] = useState(null);
 	const openMenu = (e) => setAnchorEl(e.currentTarget);
 	const closeMenu = () => setAnchorEl(null);
 
-	const deleteCol = (id) => {
+	const deleteCol = async (id) => {
 		closeMenu();
-		goHome();
-		deleteCollection(id, setCollections);
+		await deleteCollection(id, setCollections);
+		goToHome();
 	};
 
 	const openRenameModal = () => {
@@ -59,14 +68,16 @@ const NavItem = ({ col, isHighlighted, setCollections, goHome }) => {
 
 	return (
 		<ListItem
-			name={col.name}
 			button
 			className="flex justify-between"
 			selected={isHighlighted}
 			key={col._id}
 		>
+			<FolderIconRounded color="primary" fontSize="small" />
 			<Link href={`/collection/${col._id}`}>
-				<span className="w-full block text-sm">{col.name}</span>
+				<span className="w-full block text-sm ml-2 text-gray-800 truncate">
+					{col.name}
+				</span>
 			</Link>
 			<IconButton
 				aria-controls="simple-menu"

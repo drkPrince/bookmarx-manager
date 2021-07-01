@@ -13,7 +13,7 @@ const Home = ({ signIn }) => {
 			<div className="flex flex-col sm:flex-row sm:max-h-screen items-center">
 				<div className="py-20 sm:py-32 px-6 sm:pl-20 w-full sm:w-1/2">
 					<h1 className="text-4xl font-semibold text-gray-800 leading-10">
-						Bookmarx is an all in one bookmark manager
+						Save your favourite links and lose them never
 					</h1>
 					<p className="text-gray-700 text-xl mt-3 mb-6 leading-relaxed">
 						Lorem ipsum dolor, sit amet, consectetur adipisicing

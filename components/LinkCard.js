@@ -70,10 +70,10 @@ const LinkCard = ({ link, setLinks }) => {
 			{link.metadata.image ? (
 				<div className="w-full">
 					<img
-						className="hidden sm:block object-cover w-full h-[150px] overflow-hidden"
+						className="object-cover w-full h-[170px] md:h-[150px] overflow-hidden"
 						src={link.metadata.image}
 						loading="lazy"
-						alt=""
+						alt={link.metadata.title}
 					/>
 				</div>
 			) : (
@@ -116,7 +116,7 @@ const LinkCard = ({ link, setLinks }) => {
 				<form onSubmit={updateLink}>
 					<h2 className="text-2xl">Edit link</h2>
 					<label
-						className="block mt-7 text-sm text-indigo-800"
+						className="block mt-7 text-sm text-blue-600"
 						htmlFor="title"
 					>
 						Title:
@@ -130,7 +130,7 @@ const LinkCard = ({ link, setLinks }) => {
 					/>
 
 					<label
-						className="block mt-7 text-sm text-indigo-800"
+						className="block mt-7 text-sm text-blue-600"
 						htmlFor="description"
 					>
 						Description:
@@ -147,7 +147,7 @@ const LinkCard = ({ link, setLinks }) => {
 					/>
 
 					<label
-						className="block mt-7 text-sm text-indigo-800"
+						className="block mt-7 text-sm text-blue-600"
 						htmlFor="collectionID"
 					>
 						Collection

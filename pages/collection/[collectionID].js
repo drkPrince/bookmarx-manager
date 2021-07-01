@@ -42,12 +42,13 @@ const Collection = (props) => {
 	useEffect(() => {
 		(async () => {
 			if (collectionID) {
-				setLinks([]);
+				setBusy(true);
 				NProgress.start();
 				const res = await axios.get(
 					`/api/link?collectionID=${collectionID}`
 				);
 				setLinks(res.data.data);
+				setBusy(false);
 				NProgress.done();
 			}
 		})();
@@ -135,28 +136,34 @@ const Collection = (props) => {
 							</InputAdornment>
 						}
 					/>
-					<Button
-						onClick={() => setModal(true)}
-						variant="contained"
-						color="primary"
-						size="small"
-						startIcon={<AddOutlinedIcon fontSize="small" />}
-					>
-						Add new
-					</Button>
+					<div className="flex justify-end">
+						<Button
+							onClick={() => setModal(true)}
+							variant="contained"
+							color="primary"
+							size="small"
+							startIcon={<AddOutlinedIcon fontSize="small" />}
+						>
+							Add new
+						</Button>
+					</div>
 				</div>
 			</div>
-			{links.length > 0 ? (
+			{busy ? (
+				<div className="spin" />
+			) : links.length > 0 ? (
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10 w-full my-8 md:my-12">
 					<Grid />
 				</div>
 			) : (
 				<div className="flex justify-center w-full mt-16">
-					<div className="w-1/3">
-						<h2 className="text-center text-gray-600">
+					<div>
+						<p className="text-center text-gray-600">
 							It's all empty here. Maybe add something?
-						</h2>
-						<img src="/empty.png" alt="its all empty" />
+						</p>
+						<div className="w-1/3 mx-auto">
+							<img src="/empty.png" alt="its all empty" />
+						</div>
 					</div>
 				</div>
 			)}

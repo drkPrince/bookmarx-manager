@@ -4,9 +4,6 @@ import NProgress from "nprogress";
 export const getCollections = async (userID, setCollections, router) => {
 	NProgress.start();
 	const { data } = await axios.get(`/api/collection?user=${userID}`);
-	if (data.data.length > 0) {
-		router.replace(`/collection/${data.data[0]._id}`);
-	}
 	setCollections(data.data);
 	NProgress.done();
 };

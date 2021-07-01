@@ -86,3 +86,17 @@ body {
     outline: none;
   }
 }
+
+*::-webkit-scrollbar {
+  width: 12px; /* width of the entire scrollbar */
+}
+
+*::-webkit-scrollbar-track {
+  background: #fff; /* color of the tracking area */
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #aab; /* color of the scroll thumb */
+  border-radius: 20px; /* roundness of the scroll thumb */
+  border: 3px solid #fff; /* creates padding around scroll thumb */
+}

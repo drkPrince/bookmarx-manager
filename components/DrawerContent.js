@@ -30,15 +30,34 @@ const DrawerContent = ({ router, signOut, session, loading }) => {
 
 	useEffect(() => {
 		if (!loading && session?.user) {
-			getCollections(session.user.userID, setCollections, router);
+			getCollections(session.user.userID, setCollections);
 		}
 	}, [session, loading]);
 
 	return (
-		<div className="pt-16 h-full">
-			<h1 className="font-thin text-gray-700 text-4xl pl-4 mt-3 mb-6">
-				Bookmarx
-			</h1>
+		<div className="pt-12 h-full">
+			<div className="flex justify-center text-md mb-6">
+				<div className="text-center">
+					<Avatar className="mx-auto mb-2">
+						{session.user.name[0]}
+					</Avatar>
+					<p className="mb-1 text-gray-600">
+						Welcome back,{" "}
+						<span className="text-blue-600">
+							{session.user.name}
+						</span>{" "}
+					</p>
+					<Button
+						size="small"
+						onClick={() => {
+							signOut({ redirect: false });
+							router.replace("/");
+						}}
+					>
+						<span className="text-gray-400">Logout</span>
+					</Button>
+				</div>
+			</div>
 
 			<div className="px-4 flex justify-between items-center">
 				<h1 className="text-xs tracking-wider uppercase text-gray-700">
@@ -59,8 +78,8 @@ const DrawerContent = ({ router, signOut, session, loading }) => {
 						<NavItem
 							key={col._id}
 							col={col}
-							goHome={() => router.push("/")}
 							setCollections={setCollections}
+							goToHome={() => router.replace("/")}
 							isHighlighted={
 								router.query.collectionID === `${col._id}`
 							}
@@ -68,18 +87,6 @@ const DrawerContent = ({ router, signOut, session, loading }) => {
 					))}
 				</List>
 			)}
-			<div className="absolute bottom-0 left-0 flex px-4 py-3 items-center z-30">
-				<Button
-					className="flex"
-					size="small"
-					variant="outlined"
-					onClick={() =>
-						signOut({ callbackUrl: process.env.NEXTAUTH_URL })
-					}
-				>
-					<span>Logout</span>
-				</Button>
-			</div>
 
 			<Modal className="z-50" setModal={setModal} modal={modal}>
 				<form
