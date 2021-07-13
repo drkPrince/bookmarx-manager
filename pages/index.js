@@ -26,7 +26,7 @@ const Index = () => {
     return (
         <div className="px-12 py-8">
             <h1 className="text-3xl">All Collections</h1>
-            <div className="mt-8 space-y-4 flex flex-col">
+            <div className="mt-8 space-y-4 flex flex-col items-start">
                 {collections.map((c) => (
                     <Link href={`/collection/${c._id}`} key={c._id}>
                         <a className="text-gray-700 text-lg hover:text-black cursor-pointer">
