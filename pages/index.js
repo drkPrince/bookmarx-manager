@@ -26,15 +26,15 @@ const Index = () => {
     return (
         <div className="px-12 py-8">
             <h1 className="text-3xl">All Collections</h1>
-            <div className="mt-8 space-y-4">
+            <div className="mt-8 space-y-4 flex flex-col">
                 {collections.map((c) => (
                     <Link
                         href={`/collection/${c._id}`}
                         key={c._id}
-                        className="block"
+                        className="inline-block"
                     >
                         <div>
-                            <span className="inline-block text-gray-700 text-lg hover:text-black cursor-pointer">
+                            <span className="text-gray-700 text-lg hover:text-black cursor-pointer">
                                 {c.name}
                             </span>
                         </div>

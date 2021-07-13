@@ -7,40 +7,36 @@ body {
 .spin {
   width: 40px;
   height: 40px;
-  background-color: slateblue;
   margin: 100px auto;
-  -webkit-animation: sk-rotateplane 1.2s infinite ease-in-out;
-  animation: sk-rotateplane 1.2s infinite ease-in-out;
+  background-color: slateblue;
+
+  border-radius: 100%;
+  -webkit-animation: sk-scaleout 1s infinite ease-in-out;
+  animation: sk-scaleout 1s infinite ease-in-out;
 }
 
-@-webkit-keyframes sk-rotateplane {
+@-webkit-keyframes sk-scaleout {
   0% {
-    -webkit-transform: perspective(120px);
-  }
-  50% {
-    -webkit-transform: perspective(120px) rotateY(180deg);
+    -webkit-transform: scale(0);
   }
   100% {
-    -webkit-transform: perspective(120px) rotateY(180deg) rotateX(180deg);
+    -webkit-transform: scale(1);
+    opacity: 0;
   }
 }
 
-@keyframes sk-rotateplane {
+@keyframes sk-scaleout {
   0% {
-    transform: perspective(120px) rotateX(0deg) rotateY(0deg);
-    -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg);
-  }
-  50% {
-    transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
-    -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
+    -webkit-transform: scale(0);
+    transform: scale(0);
   }
   100% {
-    transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
-    -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    opacity: 0;
   }
 }
 
-/* Used to detect in JavaScript if apps have loaded styles or not. */
 :root {
   --reach-dialog: 1;
 }
