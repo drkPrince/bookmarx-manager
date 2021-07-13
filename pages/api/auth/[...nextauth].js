@@ -47,7 +47,7 @@ export default NextAuth({
                     );
                     if (doesPasswordMatch) return theUser;
                     else return null;
-                } else throw new Error("INVALID");
+                } else return null;
             },
         }),
     ],

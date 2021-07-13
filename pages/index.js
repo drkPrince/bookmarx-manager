@@ -26,18 +26,19 @@ const Index = () => {
     return (
         <div className="px-12 py-8">
             <h1 className="text-3xl">All Collections</h1>
-            <div className="mt-12 flex space-x-4">
+            <div className="mt-8 space-y-4">
                 {collections.map((c) => (
-                    <div
+                    <Link
+                        href={`/collection/${c._id}`}
                         key={c._id}
-                        className="shadow-md hover:shadow-xl p-4 border border-gray-50"
+                        className="block"
                     >
-                        <Link href={`/collection/${c._id}`}>
-                            <span className="inline-block text-gray-700 text-xl hover:text-black cursor-pointer">
+                        <div>
+                            <span className="inline-block text-gray-700 text-lg hover:text-black cursor-pointer">
                                 {c.name}
                             </span>
-                        </Link>
-                    </div>
+                        </div>
+                    </Link>
                 ))}
             </div>
         </div>

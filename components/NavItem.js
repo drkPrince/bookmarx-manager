@@ -38,7 +38,10 @@ const NavItem = ({
 	const [renameModal, setRenameModal] = useState(false);
 	const [warnModal, setWarnModal] = useState(false);
 	const [anchorEl, setAnchorEl] = useState(null);
-	const openMenu = (e) => setAnchorEl(e.currentTarget);
+	const openMenu = (e) => {
+		e.stopPropagation();
+		setAnchorEl(e.currentTarget);
+	};
 	const closeMenu = () => setAnchorEl(null);
 
 	const deleteCol = async (id) => {
