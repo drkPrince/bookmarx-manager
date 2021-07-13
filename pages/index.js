@@ -29,11 +29,9 @@ const Index = () => {
             <div className="mt-8 space-y-4 flex flex-col">
                 {collections.map((c) => (
                     <Link href={`/collection/${c._id}`} key={c._id}>
-                        <div className="inline-block">
-                            <span className="text-gray-700 text-lg hover:text-black cursor-pointer">
-                                {c.name}
-                            </span>
-                        </div>
+                        <a className="text-gray-700 text-lg hover:text-black cursor-pointer">
+                            {c.name}
+                        </a>
                     </Link>
                 ))}
             </div>
