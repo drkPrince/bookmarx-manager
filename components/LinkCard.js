@@ -69,12 +69,14 @@ const LinkCard = ({ link, setLinks }) => {
 		<article className="pb-4 shadow-md border border-gray-50 hover:shadow-xl transition-all duration-200 transform">
 			{link.metadata.image ? (
 				<div className="w-full">
-					<img
-						className="object-cover w-full h-[170px] md:h-[150px] overflow-hidden"
-						src={link.metadata.image}
-						loading="lazy"
-						alt={link.metadata.title}
-					/>
+					<a href={link.url} target="_blank">
+						<img
+							className="object-cover w-full h-[170px] md:h-[150px] overflow-hidden"
+							src={link.metadata.image}
+							loading="lazy"
+							alt={link.metadata.title}
+						/>
+					</a>
 				</div>
 			) : (
 				<img

@@ -27,7 +27,13 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const NavItem = ({ col, isHighlighted, setCollections, goToHome }) => {
+const NavItem = ({
+	col,
+	isHighlighted,
+	setCollections,
+	goToHome,
+	setMobileOpen,
+}) => {
 	const classes = useStyles();
 	const [renameModal, setRenameModal] = useState(false);
 	const [warnModal, setWarnModal] = useState(false);
@@ -42,11 +48,13 @@ const NavItem = ({ col, isHighlighted, setCollections, goToHome }) => {
 	};
 
 	const openRenameModal = () => {
+		setMobileOpen(false);
 		closeMenu();
 		setRenameModal(true);
 	};
 
 	const openDeleteModal = () => {
+		setMobileOpen(false);
 		closeMenu();
 		setWarnModal(true);
 	};
@@ -69,11 +77,16 @@ const NavItem = ({ col, isHighlighted, setCollections, goToHome }) => {
 	return (
 		<ListItem
 			button
+			onClick={() => setMobileOpen(false)}
 			className="flex justify-between"
 			selected={isHighlighted}
 			key={col._id}
 		>
-			<FolderIconRounded color="primary" fontSize="small" />
+			<FolderIconRounded
+				color="primary"
+				fontSize="small"
+				style={{ opacity: "0.7" }}
+			/>
 			<Link href={`/collection/${col._id}`}>
 				<span className="w-full block text-sm ml-2 text-gray-800 truncate">
 					{col.name}

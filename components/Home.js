@@ -12,13 +12,16 @@ const Home = ({ signIn }) => {
 		<>
 			<div className="flex flex-col sm:flex-row sm:max-h-screen items-center">
 				<div className="py-20 sm:py-32 px-6 sm:pl-20 w-full sm:w-1/2">
-					<h1 className="text-4xl font-semibold text-gray-800 leading-10">
-						Save your favourite links and lose them never
+					<h1
+						className="text-4xl text-gray-800 leading-10"
+						style={{ fontWeight: "600" }}
+					>
+						Save and organise your favourite internet links.
 					</h1>
 					<p className="text-gray-700 text-xl mt-3 mb-6 leading-relaxed">
-						Lorem ipsum dolor, sit amet, consectetur adipisicing
-						elit. Doloribus, ipsam! Lorem ipsum, dolor sit, amet
-						consectetur adipisicing elit. Voluptates, alias.
+						With Bookmarx, you can save your favorite links on the
+						internet and organise them in searchable collections.
+						This helps you to come back to it later.
 					</p>
 					<div className="flex space-x-4">
 						<Button
@@ -26,17 +29,20 @@ const Home = ({ signIn }) => {
 							color="primary"
 							onClick={() => signIn()}
 						>
-							Sign in
+							Sign in <sup>*</sup>
 						</Button>
 
 						<Button
-							color="secondary"
 							variant="outlined"
 							onClick={() => setModal(true)}
 						>
 							Create an account
 						</Button>
 					</div>
+					<p className="text-sm mt-6 text-gray-600">
+						*You can log in using demo credentials. Username: Tony
+						and Password: Stark
+					</p>
 				</div>
 				<div className="w-full sm:w-1/2 px-4">
 					<img

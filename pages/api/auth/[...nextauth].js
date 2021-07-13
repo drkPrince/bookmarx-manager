@@ -52,5 +52,3 @@ export default NextAuth({
         }),
     ],
 });
-
-//username: 'assasas', password: 'asasas'

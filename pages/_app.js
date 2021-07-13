@@ -89,7 +89,11 @@ function MyApp({ Component, pageProps }) {
                 <title>BookmarX</title>
             </Head>
 
-            {!session && <Home signIn={signIn} />}
+            {!session && (
+                <ThemeProvider theme={myTheme}>
+                    <Home signIn={signIn} />
+                </ThemeProvider>
+            )}
 
             {session && (
                 <ThemeProvider theme={myTheme}>
@@ -128,6 +132,7 @@ function MyApp({ Component, pageProps }) {
                                 >
                                     <DrawerContent
                                         router={router}
+                                        setMobileOpen={setMobileOpen}
                                         loading={loading}
                                         signOut={signOut}
                                         session={session}
@@ -144,6 +149,7 @@ function MyApp({ Component, pageProps }) {
                                 >
                                     <DrawerContent
                                         className="pt-12"
+                                        setMobileOpen={setMobileOpen}
                                         router={router}
                                         loading={loading}
                                         signOut={signOut}

@@ -44,7 +44,6 @@ export const signUp = async (e, signIn, setError, setBusy) => {
 		signIn(null, { callbackUrl: process.env.NEXTAUTH_URL });
 	} catch (e) {
 		setError(e.response.data.error);
-		console.dir(e);
 		NProgress.done();
 		setBusy(false);
 	}

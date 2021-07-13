@@ -23,7 +23,13 @@ import { getCollections, addNewCollection } from "../utils/helpers";
 
 import { useCtx } from "../ctx.js";
 
-const DrawerContent = ({ router, signOut, session, loading }) => {
+const DrawerContent = ({
+	router,
+	setMobileOpen,
+	signOut,
+	session,
+	loading,
+}) => {
 	const { setCollections, collections } = useCtx();
 	const [menu, setMenu] = useState(false);
 	const [modal, setModal] = useState(false);
@@ -35,7 +41,7 @@ const DrawerContent = ({ router, signOut, session, loading }) => {
 	}, [session, loading]);
 
 	return (
-		<div className="pt-12 h-full">
+		<div className="pt-12 h-full bg-gradient-to-b from-blue-50  to-pink-50">
 			<div className="flex justify-center text-md mb-6">
 				<div className="text-center">
 					<Avatar className="mx-auto mb-2">
@@ -50,8 +56,8 @@ const DrawerContent = ({ router, signOut, session, loading }) => {
 					<Button
 						size="small"
 						onClick={() => {
-							signOut({ redirect: false });
 							router.replace("/");
+							signOut({ redirect: false });
 						}}
 					>
 						<span className="text-gray-400">Logout</span>
@@ -65,7 +71,10 @@ const DrawerContent = ({ router, signOut, session, loading }) => {
 				</h1>
 				<IconButton
 					size="small"
-					onClick={() => setModal(true)}
+					onClick={() => {
+						setMobileOpen(false);
+						setModal(true);
+					}}
 					className="text-gray-600 text-2xl rounded"
 				>
 					<AddOutlinedIcon />
@@ -77,6 +86,7 @@ const DrawerContent = ({ router, signOut, session, loading }) => {
 					{collections.map((col) => (
 						<NavItem
 							key={col._id}
+							setMobileOpen={setMobileOpen}
 							col={col}
 							setCollections={setCollections}
 							goToHome={() => router.replace("/")}
