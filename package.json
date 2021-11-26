@@ -28,5 +28,8 @@
     "react-dom": "^17.0.2",
     "tailwindcss": "^2.2.2"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "prettier": "^2.5.0"
+  }
 }

@@ -13,160 +13,156 @@ import Provider from "../ctx";
 import { IconButton, Button, Input, Drawer, Hidden } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import {
-    createMuiTheme,
-    makeStyles,
-    ThemeProvider,
-    useTheme,
+  createMuiTheme,
+  makeStyles,
+  ThemeProvider,
+  useTheme,
 } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
 
 const myTheme = createMuiTheme({
-    typography: {
-        fontFamily: ["Inter", "sans-serif"],
+  typography: {
+    fontFamily: ["Inter", "sans-serif"],
+  },
+  palette: {
+    primary: {
+      main: "#205be1",
     },
-    palette: {
-        primary: {
-            main: "#205be1",
-        },
-    },
+  },
 });
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        display: "flex",
+  root: {
+    display: "flex",
+  },
+  drawer: {
+    zIndex: "0",
+    [theme.breakpoints.up("sm")]: {
+      width: drawerWidth,
+      flexShrink: 0,
     },
-    drawer: {
-        zIndex: "0",
-        [theme.breakpoints.up("sm")]: {
-            width: drawerWidth,
-            flexShrink: 0,
-        },
+  },
+  appBar: {
+    height: "8vh",
+    [theme.breakpoints.up("sm")]: {
+      width: `calc(100% - ${drawerWidth}px)`,
+      marginLeft: drawerWidth,
     },
-    appBar: {
-        height: "8vh",
-        [theme.breakpoints.up("sm")]: {
-            width: `calc(100% - ${drawerWidth}px)`,
-            marginLeft: drawerWidth,
-        },
-        [theme.breakpoints.down("sm")]: {
-            backgroundColor: "#205be1",
-        },
+    [theme.breakpoints.down("sm")]: {
+      backgroundColor: "#205be1",
     },
-    menuButton: {
-        // marginTop: theme.spacing(5),
-        // marginBottom: theme.spacing(3),
-        padding: "0 1rem",
-        color: "white",
-        [theme.breakpoints.up("sm")]: {
-            display: "none",
-        },
+  },
+  menuButton: {
+    // marginTop: theme.spacing(5),
+    // marginBottom: theme.spacing(3),
+    padding: "0 1rem",
+    color: "white",
+    [theme.breakpoints.up("sm")]: {
+      display: "none",
     },
-    // necessary for content to be below app bar
-    toolbar: theme.mixins.toolbar,
-    drawerPaper: {
-        width: drawerWidth,
-    },
-    content: {
-        flexGrow: 1,
-    },
+  },
+  // necessary for content to be below app bar
+  toolbar: theme.mixins.toolbar,
+  drawerPaper: {
+    width: drawerWidth,
+  },
+  content: {
+    flexGrow: 1,
+  },
 }));
 
 function MyApp({ Component, pageProps }) {
-    const classes = useStyles();
-    const theme = useTheme();
-    const router = useRouter();
-    const [drawer, setDrawer] = useState(false);
-    const [mobileOpen, setMobileOpen] = useState(false);
-    const [session, loading] = useSession();
+  const classes = useStyles();
+  const theme = useTheme();
+  const router = useRouter();
+  const [drawer, setDrawer] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [session, loading] = useSession();
 
-    if (loading) return <div className="spin" />;
+  if (loading) return <div className="spin" />;
 
-    return (
-        <Provider>
-            <Head>
-                <title>BookmarX</title>
-            </Head>
+  return (
+    <Provider>
+      <Head>
+        <title>BookmarX</title>
+      </Head>
 
-            {!session && (
-                <ThemeProvider theme={myTheme}>
-                    <Home signIn={signIn} />
-                </ThemeProvider>
-            )}
+      {!session && (
+        <ThemeProvider theme={myTheme}>
+          <Home signIn={signIn} />
+        </ThemeProvider>
+      )}
 
-            {session && (
-                <ThemeProvider theme={myTheme}>
-                    <div className={classes.appBar}>
-                        <div className="flex justify-between items-center px-8 h-full">
-                            <IconButton
-                                color="inherit"
-                                aria-label="open drawer"
-                                edge="start"
-                                onClick={() => setMobileOpen(true)}
-                                className={classes.menuButton}
-                            >
-                                <MenuIcon />
-                            </IconButton>
-                        </div>
-                    </div>
+      {session && (
+        <ThemeProvider theme={myTheme}>
+          <div className={classes.appBar}>
+            <div className="flex justify-between items-center px-8 h-full">
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                edge="start"
+                onClick={() => setMobileOpen(true)}
+                className={classes.menuButton}
+              >
+                <MenuIcon />
+              </IconButton>
+            </div>
+          </div>
 
-                    <div className={classes.root}>
-                        <nav className={classes.drawer}>
-                            <Hidden smUp implementation="css">
-                                <Drawer
-                                    variant="temporary"
-                                    anchor={
-                                        theme.direction === "rtl"
-                                            ? "right"
-                                            : "left"
-                                    }
-                                    open={mobileOpen}
-                                    onClose={() => setMobileOpen(!mobileOpen)}
-                                    classes={{
-                                        paper: classes.drawerPaper,
-                                    }}
-                                    ModalProps={{
-                                        keepMounted: true, // Better open performance on mobile.
-                                    }}
-                                >
-                                    <DrawerContent
-                                        router={router}
-                                        setMobileOpen={setMobileOpen}
-                                        loading={loading}
-                                        signOut={signOut}
-                                        session={session}
-                                    />
-                                </Drawer>
-                            </Hidden>
-                            <Hidden xsDown implementation="css">
-                                <Drawer
-                                    classes={{
-                                        paper: classes.drawerPaper,
-                                    }}
-                                    variant="permanent"
-                                    open
-                                >
-                                    <DrawerContent
-                                        className="pt-12"
-                                        setMobileOpen={setMobileOpen}
-                                        router={router}
-                                        loading={loading}
-                                        signOut={signOut}
-                                        session={session}
-                                    />
-                                </Drawer>
-                            </Hidden>
-                        </nav>
+          <div className={classes.root}>
+            <nav className={classes.drawer}>
+              <Hidden smUp implementation="css">
+                <Drawer
+                  variant="temporary"
+                  anchor={theme.direction === "rtl" ? "right" : "left"}
+                  open={mobileOpen}
+                  onClose={() => setMobileOpen(!mobileOpen)}
+                  classes={{
+                    paper: classes.drawerPaper,
+                  }}
+                  ModalProps={{
+                    keepMounted: true, // Better open performance on mobile.
+                  }}
+                >
+                  <DrawerContent
+                    router={router}
+                    setMobileOpen={setMobileOpen}
+                    loading={loading}
+                    signOut={signOut}
+                    session={session}
+                  />
+                </Drawer>
+              </Hidden>
+              <Hidden xsDown implementation="css">
+                <Drawer
+                  classes={{
+                    paper: classes.drawerPaper,
+                  }}
+                  variant="permanent"
+                  open
+                >
+                  <DrawerContent
+                    className="pt-12"
+                    setMobileOpen={setMobileOpen}
+                    router={router}
+                    loading={loading}
+                    signOut={signOut}
+                    session={session}
+                  />
+                </Drawer>
+              </Hidden>
+            </nav>
 
-                        <main className={classes.content}>
-                            <Component {...pageProps} />
-                        </main>
-                    </div>
-                </ThemeProvider>
-            )}
-        </Provider>
-    );
+            <main className={classes.content}>
+              <Component {...pageProps} />
+            </main>
+          </div>
+        </ThemeProvider>
+      )}
+    </Provider>
+  );
 }
 
 export default MyApp;
