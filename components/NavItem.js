@@ -9,14 +9,13 @@ import {
   Input,
   MenuItem,
   ListItem,
-  Avatar,
 } from "@material-ui/core";
 import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
 import FolderIconRounded from "@material-ui/icons/FolderRounded";
 import Modal from "../components/Modal";
-import { deleteCollection } from "../utils/helpers";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import ArrowRightAltOutlinedIcon from "@material-ui/icons/ArrowRightAltOutlined";
+import { mutate } from "swr";
 
 const useStyles = makeStyles((theme) => ({
   small: {
@@ -27,14 +26,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const NavItem = ({
-  col,
-  isHighlighted,
-  setCollections,
-  goToHome,
-  setMobileOpen,
-}) => {
-  const classes = useStyles();
+const deleteCollection = async (id) => {
+  await axios.delete("/api/collection", {
+    data: { collectionID: id },
+  });
+};
+
+const NavItem = ({ col, isHighlighted, userID, goToHome, setMobileOpen }) => {
   const [renameModal, setRenameModal] = useState(false);
   const [warnModal, setWarnModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -46,7 +44,8 @@ const NavItem = ({
 
   const deleteCol = async (id) => {
     closeMenu();
-    await deleteCollection(id, setCollections);
+    await deleteCollection(id);
+    await mutate(`/api/collection?user=${userID}`);
     goToHome();
   };
 
@@ -65,16 +64,11 @@ const NavItem = ({
   const changeCollectionName = async (e, cid) => {
     e.preventDefault();
     setRenameModal(false);
-    setCollections((collections) => {
-      const theCol = collections.find((c) => c._id === cid);
-      theCol.name = e.target.elements.name.value;
-      const rest = collections.filter((c) => c._id !== cid);
-      return [...rest, theCol];
-    });
     await axios.put("/api/collection", {
       collectionID: cid,
       newName: e.target.elements.name.value,
     });
+    await mutate(`/api/collection?user=${userID}`);
   };
 
   return (
@@ -91,7 +85,7 @@ const NavItem = ({
         style={{ opacity: "0.7" }}
       />
       <Link href={`/collection/${col._id}`}>
-        <span className="w-full block text-sm ml-2 text-gray-800 truncate">
+        <span className="block w-full ml-2 text-sm text-gray-800 truncate">
           {col.name}
         </span>
       </Link>
@@ -119,7 +113,7 @@ const NavItem = ({
             Rename Collection
           </label>
           <Input
-            className="w-full pb-1 my-7 text-sm py-1 px-1"
+            className="w-full px-1 py-1 pb-1 text-sm my-7"
             fullWidth
             placeholder="New Collection name"
             type="text"
@@ -139,7 +133,7 @@ const NavItem = ({
       <Modal modal={warnModal} setModal={setWarnModal}>
         <div className="flex items-center mb-6">
           <ErrorOutlineIcon fontSize="large" />
-          <h2 className="text-2xl text-gray-800 ml-4">
+          <h2 className="ml-4 text-2xl text-gray-800">
             Are you sure you want to delete this collection?
           </h2>
         </div>

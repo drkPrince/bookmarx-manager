@@ -5,25 +5,23 @@ import {
   MenuItem,
   Input,
   Button,
-  TextField,
   Select,
 } from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
 import { deleteLink } from "../utils/helpers";
 import axios from "axios";
-import { useCtx } from "../ctx";
 import Modal from "./Modal";
+import { useSWRConfig } from "swr";
 
-const LinkCard = ({ link, setLinks }) => {
-  const { collections } = useCtx();
+const LinkCard = ({ link, collections }) => {
+  const { mutate } = useSWRConfig();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [menu, setMenu] = useState(false);
   const [modal, setModal] = useState(false);
   const [warnModal, setWarnModal] = useState(false);
 
   const handleOpen = (event) => setAnchorEl(event.currentTarget);
+
   const handleClose = () => setAnchorEl(null);
 
   const openEditModal = () => {
@@ -36,37 +34,29 @@ const LinkCard = ({ link, setLinks }) => {
     setWarnModal(true);
   };
 
+  const deleteLink = async (id) => {
+    await axios.delete("/api/link", { data: { linkID: id } });
+  };
+
+  const deleteThisLink = async () => {
+    await deleteLink(link._id);
+    await mutate(`/api/link?collectionID=${link.collectionID}`);
+  };
+
   const updateLink = async (e) => {
     e.preventDefault();
     setModal(false);
-    //first, change state
-    if (e.target.elements.collectionID.value !== link.collectionID) {
-      setLinks((links) => links.filter((l) => l._id !== link._id));
-    } else {
-      const theNewLink = {
-        ...link,
-        metadata: {
-          ...link.metadata,
-          title: e.target.elements.title.value,
-          description: e.target.elements.description.value,
-        },
-      };
-      setLinks((links) => {
-        const rest = links.filter((l) => l._id !== link._id);
-        return [...rest, theNewLink];
-      });
-    }
-    //then, change DB
     await axios.put("/api/link", {
       title: e.target.elements.title.value,
       description: e.target.elements.description.value,
       collectionID: e.target.elements.collectionID.value,
       linkID: link._id,
     });
+    await mutate(`/api/link?collectionID=${link.collectionID}`);
   };
 
   return (
-    <article className="pb-4 shadow-md border border-gray-50 hover:shadow-xl transition-all duration-200 transform">
+    <article className="pb-4 transition-all duration-200 transform border shadow-md border-gray-50 hover:shadow-xl">
       {link.metadata.image ? (
         <div className="w-full">
           <a href={link.url} target="_blank">
@@ -85,18 +75,18 @@ const LinkCard = ({ link, setLinks }) => {
           alt=""
         />
       )}
-      <h1 className="text-sm font-semibold truncate mt-2 px-3">
+      <h1 className="px-3 mt-2 text-sm font-semibold truncate">
         {link.metadata.title}
       </h1>
-      <div className="flex justify-between items-center">
-        <p className="px-3 text-sm text-blue-700 mt-1 ">
+      <div className="flex items-center justify-between">
+        <p className="px-3 mt-1 text-sm text-blue-700 ">
           {link.url.split("/")[2]}
         </p>
         <IconButton size="small" onClick={handleOpen}>
           <MoreVertIcon color="primary" fontSize="small" />
         </IconButton>
       </div>
-      <p className="px-3 text-sm text-gray-600 mt-2 truncate">
+      <p className="px-3 mt-2 text-sm text-gray-600 truncate">
         {link.metadata.description ? (
           link.metadata.description
         ) : (
@@ -117,11 +107,11 @@ const LinkCard = ({ link, setLinks }) => {
       <Modal modal={modal} setModal={setModal}>
         <form onSubmit={updateLink}>
           <h2 className="text-2xl">Edit link</h2>
-          <label className="block mt-7 text-sm text-blue-600" htmlFor="title">
+          <label className="block text-sm text-blue-600 mt-7" htmlFor="title">
             Title:
           </label>
           <Input
-            className="pb-1 mt-1 text-sm py-1 px-1 text-gray-500"
+            className="px-1 py-1 pb-1 mt-1 text-sm text-gray-500"
             fullWidth
             type="text"
             defaultValue={link.metadata.title}
@@ -129,7 +119,7 @@ const LinkCard = ({ link, setLinks }) => {
           />
 
           <label
-            className="block mt-7 text-sm text-blue-600"
+            className="block text-sm text-blue-600 mt-7"
             htmlFor="description"
           >
             Description:
@@ -137,7 +127,7 @@ const LinkCard = ({ link, setLinks }) => {
 
           <Input
             label="Description"
-            className="pb-1 mt-1 text-sm py-1 px-1 text-gray-500 leading-loose"
+            className="px-1 py-1 pb-1 mt-1 text-sm leading-loose text-gray-500"
             fullWidth
             multiline
             type="text"
@@ -146,14 +136,14 @@ const LinkCard = ({ link, setLinks }) => {
           />
 
           <label
-            className="block mt-7 text-sm text-blue-600"
+            className="block text-sm text-blue-600 mt-7"
             htmlFor="collectionID"
           >
             Collection
           </label>
 
           <Select
-            className="w-full pb-1 mt-1 mb-6 text-sm py-1 px-1 text-gray-500"
+            className="w-full px-1 py-1 pb-1 mt-1 mb-6 text-sm text-gray-500"
             name="collectionID"
             defaultValue={link.collectionID}
           >
@@ -173,27 +163,14 @@ const LinkCard = ({ link, setLinks }) => {
       <Modal modal={warnModal} setModal={setWarnModal}>
         <div className="flex items-center mb-6">
           <ErrorOutlineIcon fontSize="large" />
-          <h2 className="text-2xl text-gray-800 ml-4">
+          <h2 className="ml-4 text-2xl text-gray-800">
             Are you sure you want to delete this link?
           </h2>
         </div>
-        <Button
-          onClick={() => deleteLink(link._id, setLinks)}
-          variant="contained"
-          color="primary"
-        >
+        <Button onClick={deleteThisLink} variant="contained" color="primary">
           Yes, Delete
         </Button>
       </Modal>
-      {/*<div className="flex justify-end">
-				<IconButton
-					onClick={() => deleteLink(link._id, setLinks)}
-					aria-label="delete"
-					color="secondary"
-				>
-					<DeleteIcon />
-				</IconButton>
-			</div>*/}
     </article>
   );
 };

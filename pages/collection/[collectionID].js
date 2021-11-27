@@ -2,53 +2,55 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import NProgress from "nprogress";
-import { useCtx } from "../../ctx";
 
 //MUI
-import {
-  IconButton,
-  Button,
-  TextField,
-  Input,
-  InputAdornment,
-} from "@material-ui/core";
+import { Button, Input, InputAdornment } from "@material-ui/core";
 
 //Icons
-import DeleteIcon from "@material-ui/icons/Delete";
 import AddOutlinedIcon from "@material-ui/icons/AddOutlined";
 import ArrowRightAltOutlinedIcon from "@material-ui/icons/ArrowRightAltOutlined";
 import SearchIcon from "@material-ui/icons/Search";
 
-import { addNewLink } from "../../utils/helpers";
 import LinkCard from "../../components/LinkCard";
 import Modal from "../../components/Modal";
+import { useSWRConfig } from "swr";
+import useCollections from "../../utils/useCollections";
+import useLinks from "../../utils/useLinks";
 
 const Collection = (props) => {
   const router = useRouter();
-  const [addingLink, setAddingLink] = useState(false);
-  const { collections } = useCtx();
+  const { mutate } = useSWRConfig();
   const { collectionID } = router.query;
-  const collectionName = collections?.find((c) => c._id === collectionID)?.name;
-  const [links, setLinks] = useState([]);
+
+  const collections = useCollections(props.session.user.userID);
+  const links = useLinks(collectionID);
+
+  const collectionName =
+    collections && collections.find((c) => c._id === collectionID).name;
+
   const [queryResults, setQueryResults] = useState([]);
   const [query, setQuery] = useState("");
+  const [addLinkError, setAddLinkError] = useState(null);
   const [modal, setModal] = useState(false);
-  const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
 
-  useEffect(() => {
-    (async () => {
-      if (collectionID) {
-        setBusy(true);
-        NProgress.start();
-        const res = await axios.get(`/api/link?collectionID=${collectionID}`);
-        setLinks(res.data.data);
-        setBusy(false);
-        NProgress.done();
-      }
-    })();
-  }, [collectionID]);
+  const addNewLink = async (e) => {
+    e.preventDefault();
+    setBusy(true);
+    setAddLinkError(null);
+    try {
+      await axios.post("/api/link", {
+        url: e.target.elements.url.value,
+        collectionID,
+      });
+      await mutate(`/api/link?collectionID=${collectionID}`);
+      setBusy(false);
+      setModal(false);
+    } catch (e) {
+      setBusy(false);
+      setAddLinkError("The URL appears to be invalid.");
+    }
+  };
 
   useEffect(() => {
     if (query !== "") {
@@ -61,33 +63,31 @@ const Collection = (props) => {
     }
   }, [links, query]);
 
-  const Grid = () => {
+  const LinkGrid = () => {
     return query.length > 0
       ? queryResults.map((link) => (
-          <LinkCard key={link._id} link={link} setLinks={setLinks} />
+          <LinkCard collections={collections} key={link._id} link={link} />
         ))
       : links.map((link) => (
-          <LinkCard key={link._id} link={link} setLinks={setLinks} />
+          <LinkCard collections={collections} key={link._id} link={link} />
         ));
   };
 
   return (
-    <div className="w-full px-8 py-7">
+    <div className="w-full px-4 py-7">
       <Head>
-        <title>{collectionName} | BookmarX</title>
+        <title> {collectionName} | BookmarX</title>
       </Head>
       <Modal setModal={setModal} modal={modal}>
-        <form
-          onSubmit={(e) =>
-            addNewLink(e, setModal, collectionID, setLinks, setError, setBusy)
-          }
-        >
+        <form onSubmit={addNewLink}>
           <h2 className="text-2xl text-gray-800">Add a new Link</h2>
-          {error && <p className="text-red-600">{error}</p>}
+          {addLinkError && (
+            <p className="text-sm text-red-600">{addLinkError}</p>
+          )}
           <Input
             className="w-full px-1 py-1 pb-1 text-sm my-7"
             fullWidth
-            error={error}
+            error={Boolean(addLinkError)}
             placeholder="http://"
             type="url"
             name="url"
@@ -134,11 +134,9 @@ const Collection = (props) => {
           </div>
         </div>
       </div>
-      {busy ? (
-        <div className="spin" />
-      ) : links.length > 0 ? (
+      {links && links.length > 0 ? (
         <div className="grid w-full grid-cols-1 my-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10 md:my-12">
-          <Grid />
+          <LinkGrid />
         </div>
       ) : (
         <div className="flex justify-center w-full mt-16">

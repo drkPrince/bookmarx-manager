@@ -1,27 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
 import {
   IconButton,
   Button,
-  Menu,
   Input,
-  MenuItem,
   List,
-  ListItem,
   Divider,
   Avatar,
 } from "@material-ui/core";
 import Modal from "../components/Modal";
 import NavItem from "../components/NavItem";
-import DeleteIcon from "@material-ui/icons/Delete";
-import InboxIcon from "@material-ui/icons/Inbox";
 import AddOutlinedIcon from "@material-ui/icons/AddOutlined";
-import ExitToAppRoundedIcon from "@material-ui/icons/ExitToAppRounded";
 import ArrowRightAltOutlinedIcon from "@material-ui/icons/ArrowRightAltOutlined";
 
-import { getCollections, addNewCollection } from "../utils/helpers";
-
-import { useCtx } from "../ctx.js";
+import useCollections from "../utils/useCollections";
+import { mutate } from "swr";
+import NProgress from "nprogress";
 
 const DrawerContent = ({
   router,
@@ -30,19 +24,24 @@ const DrawerContent = ({
   session,
   loading,
 }) => {
-  const { setCollections, collections } = useCtx();
-  const [menu, setMenu] = useState(false);
   const [modal, setModal] = useState(false);
+  const collections = useCollections(session.user.userID);
 
-  useEffect(() => {
-    if (!loading && session?.user) {
-      getCollections(session.user.userID, setCollections);
-    }
-  }, [session, loading]);
+  const addNewCollection = async (e) => {
+    e.preventDefault();
+    NProgress.start();
+    setModal(false);
+    const res = await axios.post("/api/collection", {
+      name: e.target.elements.name.value,
+      user: session.user.userID,
+    });
+    await mutate(`/api/collection?user=${session.user.userID}`);
+    NProgress.done();
+  };
 
   return (
-    <div className="pt-12 h-full bg-gradient-to-b from-blue-50  to-pink-50">
-      <div className="flex justify-center text-md mb-6">
+    <div className="h-full pt-12 bg-gradient-to-b from-blue-50 to-pink-50">
+      <div className="flex justify-center mb-6 text-md">
         <div className="text-center">
           <Avatar className="mx-auto mb-2">{session.user.name[0]}</Avatar>
           <p className="mb-1 text-gray-600">
@@ -51,9 +50,9 @@ const DrawerContent = ({
           </p>
           <Button
             size="small"
-            onClick={() => {
+            onClick={async () => {
+              await signOut({ redirect: false });
               router.replace("/");
-              signOut({ redirect: false });
             }}
           >
             <span className="text-gray-400">Logout</span>
@@ -61,8 +60,8 @@ const DrawerContent = ({
         </div>
       </div>
 
-      <div className="px-4 flex justify-between items-center">
-        <h1 className="text-xs tracking-wider uppercase text-gray-700">
+      <div className="flex items-center justify-between px-4">
+        <h1 className="text-xs tracking-wider text-gray-700 uppercase">
           Collections
         </h1>
         <IconButton
@@ -71,7 +70,7 @@ const DrawerContent = ({
             setMobileOpen(false);
             setModal(true);
           }}
-          className="text-gray-600 text-2xl rounded"
+          className="text-2xl text-gray-600 rounded"
         >
           <AddOutlinedIcon />
         </IconButton>
@@ -83,8 +82,8 @@ const DrawerContent = ({
             <NavItem
               key={col._id}
               setMobileOpen={setMobileOpen}
+              userID={session.user.userID}
               col={col}
-              setCollections={setCollections}
               goToHome={() => router.replace("/")}
               isHighlighted={router.query.collectionID === `${col._id}`}
             />
@@ -93,16 +92,12 @@ const DrawerContent = ({
       )}
 
       <Modal className="z-50" setModal={setModal} modal={modal}>
-        <form
-          onSubmit={(e) =>
-            addNewCollection(e, setModal, setCollections, session.user.userID)
-          }
-        >
+        <form onSubmit={addNewCollection}>
           <label className="text-2xl" htmlFor="name">
             Add a new collection
           </label>
           <Input
-            className="w-full pb-1 my-7 text-sm py-1 px-1"
+            className="w-full px-1 py-1 pb-1 text-sm my-7"
             fullWidth
             placeholder="Collection name"
             type="text"
